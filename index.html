@@ -8,7 +8,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 
   <link rel="stylesheet" href="https://npmcdn.com/leaflet@1.0.3/dist/leaflet.css" />
-	<script src="../lib/limapper.js"></script>
+	<script src="lib/limapper.js"></script>
 	<style type='text/css'>
 .sidebar-right {
   /* critical sizing and position styles */
@@ -113,10 +113,24 @@ html, body, .main-wrapper { height: 100%; width: 100%; font-family: Helvetica, A
       <div id="map"></div>
     </div>
   </div>
-  <script>
-    var limapper = new Limapper();
-    limapper.init(
-    	{elid: 'map', imageUrl: 'http://res.freestockphotos.biz/pictures/0/319-various-call-center-women-pv.jpg', imageWidth: 958, imageHeight: 737});
-  </script>
+
+<script>
+  var limapper = new Limapper();
+  limapper.init({ 
+      elid: 'map', 
+      imageUrl: 'http://res.freestockphotos.biz/pictures/0/319-various-call-center-women-pv.jpg', 
+      imageWidth: 958, 
+      imageHeight: 737
+    });
+</script>
+
+<!-- jQuery -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+
+<!-- vuejs -->
+<script src="https://unpkg.com/vue@2.2.1/dist/vue.js"></script>
+<script src="https://unpkg.com/vuex@2.2.1/dist/vuex.js"></script>
+<script src="https://unpkg.com/vue-router@2.3.0/dist/vue-router.js"></script>
+
 </body>
 </html>

@@ -12,7 +12,6 @@ export default class Limapper {
    */
   constructor() {
     this._name = 'Limapper';
-    this._items = [];
   }
 
   /**
@@ -34,17 +33,27 @@ export default class Limapper {
 
     let items = [];
     let map = this._map;
-    let origin = map.latLngToLayerPoint(new L.LatLng(0, 0));
+    let po = map.latLngToLayerPoint(new L.LatLng(0, 0));
 
-    this._items.forEach((v, k) => {
-      v.pxpoints = [];
-      v._latlngs[0].forEach((p, k2) =>{
-        let p2 = map.latLngToLayerPoint(p);
+    map.eachLayer((v, k) => {
+      // handle rectangle
+      if (v.editor instanceof L.Editable.RectangleEditor) {
+        if (v._bounds) {
+          let nw = map.latLngToLayerPoint(v._bounds.getNorthWest());
+          let se = map.latLngToLayerPoint(v._bounds.getSouthEast());
 
-        v.pxpoints.push({x: p2.x - origin.x, y: p2.y - origin.y });
-      });
+          v.coords = {
+            x1: nw.x - po.x,
+            x2: se.x - po.x,
+            y1: nw.y - po.y,
+            y2: se.y - po.y,
+            type: 'rect'
+          };
 
-      items.push(v);
+          items.push(v);
+        }
+      }
+
     });
 
     return items;
@@ -98,12 +107,13 @@ export default class Limapper {
           .on(link, 'click', function () {
             window.LAYER = this.options.callback.call(map.editTools);
           }, this);
+
         return container;
       }
     });
 
     map.on('layeradd', (e) => {
-      if (e.layer instanceof L.EditControl) {
+      if (e.layer instanceof L.Path) {
         self._items.push(e.layer);
         setTimeout(() => {
           self.items();
@@ -115,7 +125,7 @@ export default class Limapper {
       options: {
         position: 'topleft',
         callback: map.editTools.startRectangle,
-        kind: 'rectangle',
+        kind: 'rect',
         html: '⬛'
       }
     });
