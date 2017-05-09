@@ -24,7 +24,6 @@
     "leaflet.path.drag": "0.0.5",
     "mocha": "2.3.4",
     "webpack": "2.2.1",
-    "wu": "github:niiknow/wu",
     "yargs": "6.6.0"
   },
   "repository": {

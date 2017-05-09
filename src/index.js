@@ -1,9 +1,6 @@
 import L from 'leaflet';
-import Wu from 'wu';
 require('leaflet.path.drag');
 require('leaflet-editable');
-
-const wu = new Wu();
 
 /**
  * Leaflet Image Mapper
@@ -37,12 +34,13 @@ export default class Limapper {
 
     let items = [];
     let map = this._map;
-    var origin = map.latLngToLayerPoint(new L.LatLng(0, 0));
+    let origin = map.latLngToLayerPoint(new L.LatLng(0, 0));
 
-    wu.each(this._items, (v, k) => {
+    this._items.forEach((v, k) => {
       v.pxpoints = [];
-      wu.each(v._latlngs[0], (p, k2) =>{
+      v._latlngs[0].forEach((p, k2) =>{
         let p2 = map.latLngToLayerPoint(p);
+
         v.pxpoints.push({x: p2.x - origin.x, y: p2.y - origin.y });
       });
 
@@ -67,9 +65,12 @@ export default class Limapper {
       editable: true,
       crs: L.CRS.Simple
     };
-    let southWest, northEast, bounds, map, pointOrigin;
+    let southWest, northEast, bounds, map;
 
-    opts = wu.defaults(opts, defs);
+    // apply defaults
+    for (let k in defs) {
+      opts[k] = opts[k] || defs[k];
+    }
     map = L.map(opts.elid || 'map', opts);
     southWest = map.unproject([0, opts.imageHeight]);
     northEast = map.unproject([opts.imageWidth, 0]);
@@ -96,19 +97,16 @@ export default class Limapper {
           .on(link, 'click', L.DomEvent.stop)
           .on(link, 'click', function () {
             window.LAYER = this.options.callback.call(map.editTools);
-        }, this);
-
+          }, this);
         return container;
       }
     });
 
-    map.on('layeradd', function(e) {
-
-      if (e.layer instanceof L.Path) {
+    map.on('layeradd', (e) => {
+      if (e.layer instanceof L.EditControl) {
         self._items.push(e.layer);
-        setTimeout(function() {
+        setTimeout(() => {
           self.items();
-
         }, 100);
       }
     });
