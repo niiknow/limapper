@@ -1,8 +1,8 @@
 {
-  "name": "limapper",
+  "name": "Limapper",
   "version": "0.2.2",
   "description": "Leaflet Image Mapper",
-  "main": "lib/limapper.js",
+  "main": "lib/Limapper.js",
   "scripts": {
     "build": "webpack --env build",
     "dev": "webpack --progress --colors --watch --env dev",
