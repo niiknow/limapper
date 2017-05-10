@@ -1,6 +1,6 @@
 # Leaflet Image Mapper
 
-Image Hotspot Mapper with leaflet and pure javascript.  Vuejs was use to simplify templating and to demonstrate best use of Image Mapper.
+Image Hotspot Mapper with leaflet and pure javascript.  BootstrapCss and Vuejs use in demo simplify template and styling.
 
 ## Features
 
@@ -20,6 +20,16 @@ limapper.init({
     imageWidth: 958, 
     imageHeight: 737
   });
+```
+
+debug locally with:
+```
+npm run dev
+```
+
+build with:
+```
+npm run build
 ```
 
 # MIT
