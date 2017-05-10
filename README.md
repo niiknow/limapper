@@ -2,6 +2,8 @@
 
 Image Hotspot Mapper with leaflet and pure javascript.  BootstrapCss and Vuejs use in demo simplify template and styling.
 
+You can use tools like Vuejs to render imagemap to the UI and/or (ImageMapster)[https://github.com/jamietre/ImageMapster] to provide user friendly interaction.
+
 ## Features
 
 - [x] Render image on leaflet with zoom and pan capability.
