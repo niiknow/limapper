@@ -27,29 +27,30 @@ export default class Limapper {
    * @return {Array} list of items
    */
   get items() {
-    if (!this._map) {
+    let self = this;
+
+    if (!self._map) {
       return [];
     }
 
     let items = [];
-    let map = this._map;
+    let map = self._map;
     let po = map.latLngToLayerPoint(new L.LatLng(0, 0));
 
     map.eachLayer((v, k) => {
       // handle rectangle
       if (v.editor instanceof L.Editable.RectangleEditor) {
         if (v._bounds) {
+          if (!v.mydata) {
+            v.mydata = {rect: {}};
+          }
           let nw = map.latLngToLayerPoint(v._bounds.getNorthWest());
           let se = map.latLngToLayerPoint(v._bounds.getSouthEast());
 
-          v.coords = {
-            x1: nw.x - po.x,
-            x2: se.x - po.x,
-            y1: nw.y - po.y,
-            y2: se.y - po.y,
-            type: 'rect'
-          };
-
+          v.mydata.rect.x1 = nw.x - po.x;
+          v.mydata.rect.x2 = se.x - po.x;
+          v.mydata.rect.y1 = nw.y - po.y;
+          v.mydata.rect.y2 = se.y - po.y;
           items.push(v);
         }
       }

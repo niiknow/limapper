@@ -1,8 +1,37 @@
-# LeafletImageMapper
-Generate image hotspot or imagemap html with leaflet in pure javascript.  Vuejs is use for ease of templating in demo: https://niiknow.github.io/limapper/
+# Leaflet Image Mapper
 
-So you have an image and you want to map hotspot on the image relative to its pixel coordinates.  LeafletImageMapper can output in both JSON and/or imagemap html.  
+Image Hotspot Mapper with leaflet and pure javascript.  BootstrapCss and Vuejs use in demo simplify template and styling.
 
 You can use tools like Vuejs to render imagemap to the UI and/or (ImageMapster)[https://github.com/jamietre/ImageMapster] to provide user friendly interaction.
+
+## Features
+
+- [x] Render image on leaflet with zoom and pan capability.
+- [x] Allow for rectangle image mapping.
+- [x] Allow for getting mapped items with pixel coordinates.
+- [ ] Enable single item edit mode.
+
+## To run
+Reference image mapper js file.
+
+```javascript
+var limapper = new Limapper();
+limapper.init({ 
+    elid: 'map', 
+    imageUrl: '319-various-call-center-women-pv.jpg', 
+    imageWidth: 958, 
+    imageHeight: 737
+  });
+```
+
+debug locally with:
+```
+npm run dev
+```
+
+build with:
+```
+npm run build
+```
 
 # MIT
