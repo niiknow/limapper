@@ -48,6 +48,9 @@ const config = {
       }
     ]
   },
+  externals: {
+    'leaflet': 'L'
+  },
   resolve: {
     modules: [path.resolve('./src'), 'node_modules'],
     extensions: ['.json', '.js']
