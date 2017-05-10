@@ -1,5 +1,5 @@
 {
-  "name": "Limapper",
+  "name": "limapper",
   "version": "0.2.2",
   "description": "Leaflet Image Mapper",
   "main": "lib/limapper.js",

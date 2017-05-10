@@ -114,7 +114,7 @@ export default class Limapper {
 
     map.on('layeradd', (e) => {
       if (e.layer instanceof L.Path) {
-        self._items.push(e.layer);
+        // self._items.push(e.layer);
         setTimeout(() => {
           self.items();
         }, 100);
