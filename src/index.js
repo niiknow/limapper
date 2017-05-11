@@ -12,6 +12,9 @@ export default class Limapper {
    */
   constructor() {
     this._name = 'Limapper';
+    this._latestItem = null;
+    this._selectedItem = null;
+    this._identity = 1;
   }
 
   /**
@@ -23,41 +26,38 @@ export default class Limapper {
   }
 
   /**
-   * get items
-   * @return {Array} list of items
+   * get item mapped data
+   * @param  {object} item
+   * @return {object}      item or null if no data found
    */
-  get items() {
+  getMapData(item) {
     let self = this;
+    let v = item;
 
     if (!self._map) {
-      return [];
+      return null;
     }
 
-    let items = [];
     let map = self._map;
     let po = map.latLngToLayerPoint(new L.LatLng(0, 0));
 
-    map.eachLayer((v, k) => {
-      // handle rectangle
-      if (v.editor instanceof L.Editable.RectangleEditor) {
-        if (v._bounds) {
-          if (!v.mydata) {
-            v.mydata = {rect: {}};
-          }
-          let nw = map.latLngToLayerPoint(v._bounds.getNorthWest());
-          let se = map.latLngToLayerPoint(v._bounds.getSouthEast());
-
-          v.mydata.rect.x1 = nw.x - po.x;
-          v.mydata.rect.x2 = se.x - po.x;
-          v.mydata.rect.y1 = nw.y - po.y;
-          v.mydata.rect.y2 = se.y - po.y;
-          items.push(v);
+    // handle rectangle
+    if (v.editor instanceof L.Editable.RectangleEditor) {
+      if (v._bounds) {
+        if (!v.mapdata) {
+          v.mapdata = {rect: {}};
         }
+        let nw = map.latLngToLayerPoint(v._bounds.getNorthWest());
+        let se = map.latLngToLayerPoint(v._bounds.getSouthEast());
+
+        v.mapdata.rect.x1 = nw.x - po.x;
+        v.mapdata.rect.x2 = se.x - po.x;
+        v.mapdata.rect.y1 = nw.y - po.y;
+        v.mapdata.rect.y2 = se.y - po.y;
+        return v;
       }
-
-    });
-
-    return items;
+    }
+    return null;
   }
 
   /**
@@ -75,7 +75,7 @@ export default class Limapper {
       editable: true,
       crs: L.CRS.Simple
     };
-    let southWest, northEast, bounds, map;
+    let southWest, northEast, bounds, map, layerPopup;
 
     // apply defaults
     for (let k in defs) {
@@ -89,6 +89,7 @@ export default class Limapper {
     map.setMaxBounds(bounds);
     this._map = map;
 
+    // add new edit control with behavior
     L.EditControl = L.Control.extend({
       options: {
         position: 'topleft',
@@ -113,15 +114,7 @@ export default class Limapper {
       }
     });
 
-    map.on('layeradd', (e) => {
-      if (e.layer instanceof L.Path) {
-        // self._items.push(e.layer);
-        setTimeout(() => {
-          self.items();
-        }, 100);
-      }
-    });
-
+    // now create the rectangle control
     L.NewRectangleControl = L.EditControl.extend({
       options: {
         position: 'topleft',
@@ -131,8 +124,72 @@ export default class Limapper {
       }
     });
 
+    // add the control to map
     map.addControl(new L.NewRectangleControl());
 
+    // handle new item
+    map.on('layeradd', (e) => {
+      if (e.layer instanceof L.Path) {
+        let item = e.layer;
+
+        self._latestItem = item;
+        item.mapdata = {name: `Item #${self._identity++}` };
+        item.on('dblclick', L.DomEvent.stop).on('dblclick', item.toggleEdit);
+        item.on('mouseover', (e) => {
+          if (map && item.mapdata) {
+            layerPopup = L.popup()
+            .setLatLng(e.latlng)
+            .setContent(item.mapdata.name)
+            .openOn(map);
+          }
+        });
+
+        item.on('mouseout', (e) => {
+          if (layerPopup && map) {
+            map.closePopup(layerPopup);
+            layerPopup = null;
+          }
+        });
+      }
+    });
+
     return self;
+  }
+
+  /**
+   * get items
+   * @return {Array} list of items
+   */
+  get items() {
+    let self = this;
+    let items = [];
+
+    if (!self._map) {
+      return items;
+    }
+
+    self._map.eachLayer((v, k) => {
+      if (self.getData(v)) {
+        items.push(v);
+      }
+    });
+
+    return items;
+  }
+
+  /**
+   * get last item added
+   * @return {object} last item added
+   */
+  get latestItem() {
+    return this.getMapData(this._latestItem);
+  }
+
+  /**
+   * add a single pixel coordinates item
+   * @param {object} mapData item map data
+   */
+  addPixelItem(mapData) {
+    return null;
   }
 }
