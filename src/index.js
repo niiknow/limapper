@@ -185,11 +185,46 @@ export default class Limapper {
     return this.getMapData(this._latestItem);
   }
 
+  p2ll(x, y) {
+    return this._map.containerPointToLatLng([x, y]);
+  }
+
   /**
    * add a single pixel coordinates item
    * @param {object} mapData item map data
    */
-  addPixelItem(mapData) {
-    return null;
+  addItem(mapData) {
+    let self = this;
+    let rect = mapData.rect;
+
+    var layer = L.rectangle(
+      [self.p2ll(rect.x1, rect.y1), self.p2ll(rect.x2, rect.y2)]
+    ).addTo(self._map);
+
+    layer.enableEdit();
+    return layer;
+  }
+
+  addItems(items) {
+    let self = this;
+    let rst = [];
+
+    items.forEach(i => {
+      let it = self.addItem(i);
+
+      rst.push(it);
+    });
+
+    return it;
+  }
+
+  /**
+   * remove item
+   * @param {object} item the map data item
+   */
+  removeItem(item) {
+    if (item && item.remove) {
+      item.remove();
+    }
   }
 }
