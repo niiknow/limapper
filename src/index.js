@@ -1,20 +1,21 @@
-import L from 'leaflet';
-require('leaflet.path.drag');
-require('leaflet-editable');
+import L from 'leaflet'
+require('leaflet.path.drag')
+require('leaflet-editable')
 
 /**
  * Leaflet Image Mapper
  */
-export default class Limapper {
+class Limapper {
   /**
-   * initialize object
-   * @return {object} Instance
+   * Initialize an instance of Limapper
+   *
+   * @return an instance of Limapper
    */
   constructor() {
-    this._name = 'Limapper';
-    this._latestItem = null;
-    this._selectedItem = null;
-    this._identity = 1;
+    this._name = 'Limapper'
+    this._latestItem = null
+    this._selectedItem = null
+    this._identity = 1
   }
 
   /**
@@ -22,7 +23,7 @@ export default class Limapper {
    * @return {string} name
    */
   get name() {
-    return this._name;
+    return this._name
   }
 
   /**
@@ -31,33 +32,33 @@ export default class Limapper {
    * @return {object}      item or null if no data found
    */
   getMapData(item) {
-    let self = this;
-    let v = item;
+    let self = this
+    let v = item
 
     if (!self._map) {
-      return null;
+      return null
     }
 
-    let map = self._map;
-    let po = map.latLngToLayerPoint(new L.LatLng(0, 0));
+    let map = self._map
+    let po = map.latLngToLayerPoint(new L.LatLng(0, 0))
 
     // handle rectangle
     if (v.editor instanceof L.Editable.RectangleEditor) {
       if (v._bounds) {
         if (!v.mapdata) {
-          v.mapdata = {rect: {}};
+          v.mapdata = {rect: {}}
         }
-        let nw = map.latLngToLayerPoint(v._bounds.getNorthWest());
-        let se = map.latLngToLayerPoint(v._bounds.getSouthEast());
+        let nw = map.latLngToLayerPoint(v._bounds.getNorthWest())
+        let se = map.latLngToLayerPoint(v._bounds.getSouthEast())
 
-        v.mapdata.rect.x1 = nw.x - po.x;
-        v.mapdata.rect.x2 = se.x - po.x;
-        v.mapdata.rect.y1 = nw.y - po.y;
-        v.mapdata.rect.y2 = se.y - po.y;
-        return v;
+        v.mapdata.rect.x1 = nw.x - po.x
+        v.mapdata.rect.x2 = se.x - po.x
+        v.mapdata.rect.y1 = nw.y - po.y
+        v.mapdata.rect.y2 = se.y - po.y
+        return v
       }
     }
-    return null;
+    return null
   }
 
   /**
@@ -66,7 +67,7 @@ export default class Limapper {
    * @return {object}      self
    */
   init(opts) {
-    let self = this;
+    let self = this
     let defs = {
       minZoom: 1,
       maxZoom: 5,
@@ -74,20 +75,20 @@ export default class Limapper {
       zoom: 1,
       editable: true,
       crs: L.CRS.Simple
-    };
-    let southWest, northEast, bounds, map, layerPopup;
+    }
+    let southWest, northEast, bounds, map, layerPopup
 
     // apply defaults
     for (let k in defs) {
-      opts[k] = opts[k] || defs[k];
+      opts[k] = opts[k] || defs[k]
     }
-    map = L.map(opts.elid || 'map', opts);
-    southWest = map.unproject([0, opts.imageHeight]);
-    northEast = map.unproject([opts.imageWidth, 0]);
-    bounds = new L.LatLngBounds(southWest, northEast);
-    L.imageOverlay(opts.imageUrl, bounds).addTo(map);
-    map.setMaxBounds(bounds);
-    this._map = map;
+    map = L.map(opts.elid || 'map', opts)
+    southWest = map.unproject([0, opts.imageHeight])
+    northEast = map.unproject([opts.imageWidth, 0])
+    bounds = new L.LatLngBounds(southWest, northEast)
+    L.imageOverlay(opts.imageUrl, bounds).addTo(map)
+    map.setMaxBounds(bounds)
+    this._map = map
 
     // add new edit control with behavior
     L.EditControl = L.Control.extend({
@@ -99,20 +100,20 @@ export default class Limapper {
       },
       onAdd: function (map) {
         let container = L.DomUtil.create('div', 'leaflet-control leaflet-bar'),
-          link = L.DomUtil.create('a', '', container);
+          link = L.DomUtil.create('a', '', container)
 
-        link.href = '#';
-        link.title = 'Create a new ' + this.options.kind;
-        link.innerHTML = this.options.html;
+        link.href = '#'
+        link.title = 'Create a new ' + this.options.kind
+        link.innerHTML = this.options.html
         L.DomEvent
           .on(link, 'click', L.DomEvent.stop)
           .on(link, 'click', function () {
-            window.LAYER = this.options.callback.call(map.editTools);
-          }, this);
+            window.LAYER = this.options.callback.call(map.editTools)
+          }, this)
 
-        return container;
+        return container
       }
-    });
+    })
 
     // now create the rectangle control
     L.NewRectangleControl = L.EditControl.extend({
@@ -122,38 +123,38 @@ export default class Limapper {
         kind: 'rect',
         html: '⬛'
       }
-    });
+    })
 
     // add the control to map
-    map.addControl(new L.NewRectangleControl());
+    map.addControl(new L.NewRectangleControl())
 
     // handle new item
     map.on('layeradd', (e) => {
       if (e.layer instanceof L.Path) {
-        let item = e.layer;
+        let item = e.layer
 
-        self._latestItem = item;
-        item.mapdata = {name: `Item #${self._identity++}` };
-        item.on('dblclick', L.DomEvent.stop).on('dblclick', item.toggleEdit);
+        self._latestItem = item
+        item.mapdata = {name: `Item #${self._identity++}` }
+        item.on('dblclick', L.DomEvent.stop).on('dblclick', item.toggleEdit)
         item.on('mouseover', (e) => {
           if (map && item.mapdata) {
             layerPopup = L.popup()
             .setLatLng(e.latlng)
             .setContent(item.mapdata.name)
-            .openOn(map);
+            .openOn(map)
           }
-        });
+        })
 
         item.on('mouseout', (e) => {
           if (layerPopup && map) {
-            map.closePopup(layerPopup);
-            layerPopup = null;
+            map.closePopup(layerPopup)
+            layerPopup = null
           }
-        });
+        })
       }
-    });
+    })
 
-    return self;
+    return self
   }
 
   /**
@@ -161,20 +162,20 @@ export default class Limapper {
    * @return {Array} list of items
    */
   get items() {
-    let self = this;
-    let items = [];
+    let self = this
+    let items = []
 
     if (!self._map) {
-      return items;
+      return items
     }
 
     self._map.eachLayer((v, k) => {
       if (self.getData(v)) {
-        items.push(v);
+        items.push(v)
       }
-    });
+    })
 
-    return items;
+    return items
   }
 
   /**
@@ -182,11 +183,11 @@ export default class Limapper {
    * @return {object} last item added
    */
   get latestItem() {
-    return this.getMapData(this._latestItem);
+    return this.getMapData(this._latestItem)
   }
 
   p2ll(x, y) {
-    return this._map.containerPointToLatLng([x, y]);
+    return this._map.containerPointToLatLng([x, y])
   }
 
   /**
@@ -194,28 +195,28 @@ export default class Limapper {
    * @param {object} mapData item map data
    */
   addItem(mapData) {
-    let self = this;
-    let rect = mapData.rect;
+    let self = this
+    let rect = mapData.rect
 
     var layer = L.rectangle(
       [self.p2ll(rect.x1, rect.y1), self.p2ll(rect.x2, rect.y2)]
-    ).addTo(self._map);
+    ).addTo(self._map)
 
-    layer.enableEdit();
-    return layer;
+    layer.enableEdit()
+    return layer
   }
 
   addItems(items) {
-    let self = this;
-    let rst = [];
+    let self = this
+    let rst = []
 
     items.forEach(i => {
-      let it = self.addItem(i);
+      let it = self.addItem(i)
 
-      rst.push(it);
-    });
+      rst.push(it)
+    })
 
-    return it;
+    return it
   }
 
   /**
@@ -224,7 +225,9 @@ export default class Limapper {
    */
   removeItem(item) {
     if (item && item.remove) {
-      item.remove();
+      item.remove()
     }
   }
 }
+
+export default Limapper

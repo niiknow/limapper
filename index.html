@@ -8,15 +8,11 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 
   <!-- Latest compiled and minified CSS -->
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.3/dist/leaflet.css"
-    integrity="sha512-07I2e+7D8p6he1SIM+1twR5TIrhUQn9+I6yjqD53JQjFiMf8EtC93ty0/5vJTZGF8aAocvHYNEDJajGdNx1IsQ=="
-    crossorigin="anonymous"/>
-  <script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"
-    integrity="sha512-A7vV8IFfih/D732iSSKi20u/ooOfj/AGehOKq0f4vLT1Zr2Y+RX7C+w8A1gaSasGtRUZpF/NZgzSAu4/Gc41Lg=="
-    crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet"></script>
 
-	<script src="lib/Limapper.js"></script>
+	<script src="dist/index.js?b"></script>
 	<style type='text/css'>
 .sidebar-right {
   /* critical sizing and position styles */
@@ -39,7 +35,7 @@
   top: 0;
   left: 0;
   z-index: 1;
-  
+
   /* non-critical apperance styles */
   padding-right: 4em;
   background-image: linear-gradient(135deg, rgb(254,255,255) 0%,rgb(221,241,249) 35%,rgb(160,216,239) 100%);
@@ -56,10 +52,10 @@
 label[for="nav-trigger"] {
   /* critical positioning styles */
   position: absolute;
-  right: 15px; 
+  right: 15px;
   top: 15px;
   z-index: 2;
-  
+
   /* non-critical apperance styles */
   height: 30px;
   width: 30px;
@@ -135,25 +131,20 @@ path.leaflet-path-draggable {
   </div>
 
 <script>
+  var a = 1;
   var limapper = new Limapper();
 
   /* source - http://res.freestockphotos.biz/pictures/0/319-various-call-center-women-pv.jpg' */
 
-  limapper.init({ 
-      elid: 'map', 
-      imageUrl: '319-various-call-center-women-pv.jpeg', 
-      imageWidth: 958, 
+  limapper.init({
+      elid: 'map',
+      imageUrl: '319-various-call-center-women-pv.jpeg',
+      imageWidth: 958,
       imageHeight: 737
     });
 </script>
 
 <!-- jQuery -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
-
-<!-- vuejs -->
-<script src="https://unpkg.com/vue@2.2.1/dist/vue.js"></script>
-<script src="https://unpkg.com/vuex@2.2.1/dist/vuex.js"></script>
-<script src="https://unpkg.com/vue-router@2.3.0/dist/vue-router.js"></script>
-
 </body>
 </html>

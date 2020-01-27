@@ -1,0 +1,9 @@
+.nyc_output/
+example/
+tests/
+.babelrc
+.editorconfig
+.eslintrc.js
+.travis.yml
+index.html
+webpack.mix.js
