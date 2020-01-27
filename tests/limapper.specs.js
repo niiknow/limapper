@@ -1,7 +1,7 @@
 import test from 'ava'
-import Limapper from '../src/index.js'
+import limapper from '../src/index.js'
 
-test('Limapper return correct name', t => {
-  const ip = new Limapper()
-  t.is(ip.name, 'Limapper')
+test('limapper return correct name', t => {
+  const ip = new limapper()
+  t.is(ip.name, 'limapper')
 })

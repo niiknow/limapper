@@ -1,5 +1,5 @@
 /*!
- * Limapper
+ * limapper
  * Leaflet Image Mapper
 
  * @version v0.3.0
@@ -11,11 +11,11 @@
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory(require("L"));
 	else if(typeof define === 'function' && define.amd)
-		define("Limapper", ["L"], factory);
+		define("limapper", ["L"], factory);
 	else if(typeof exports === 'object')
-		exports["Limapper"] = factory(require("L"));
+		exports["limapper"] = factory(require("L"));
 	else
-		root["Limapper"] = factory(root["L"]);
+		root["limapper"] = factory(root["L"]);
 })(window, function(__WEBPACK_EXTERNAL_MODULE_leaflet__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
@@ -2252,7 +2252,7 @@ function () {
   function Limapper() {
     _classCallCheck(this, Limapper);
 
-    this._name = 'Limapper';
+    this._name = 'limapper';
     this._latestItem = null;
     this._selectedItem = null;
     this._identity = 1;

@@ -2,11 +2,11 @@
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory();
 	else if(typeof define === 'function' && define.amd)
-		define("Limapper", [], factory);
+		define("limapper", [], factory);
 	else if(typeof exports === 'object')
-		exports["Limapper"] = factory();
+		exports["limapper"] = factory();
 	else
-		root["Limapper"] = factory();
+		root["limapper"] = factory();
 })(window, function() {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache

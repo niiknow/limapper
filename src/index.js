@@ -12,7 +12,7 @@ class Limapper {
    * @return an instance of Limapper
    */
   constructor() {
-    this._name = 'Limapper'
+    this._name = 'limapper'
     this._latestItem = null
     this._selectedItem = null
     this._identity = 1
