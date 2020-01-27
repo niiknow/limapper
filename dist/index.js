@@ -2,7 +2,7 @@
  * limapper
  * Leaflet Image Mapper
 
- * @version v0.3.0
+ * @version v0.5.0
  * @author Tom Noogen
  * @homepage https://github.com/niiknow/limapper
  * @repository https://github.com/niiknow/limapper.git
@@ -2223,15 +2223,11 @@ L.Path.addInitHook(function () {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var leaflet__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! leaflet */ "leaflet");
-/* harmony import */ var leaflet__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(leaflet__WEBPACK_IMPORTED_MODULE_0__);
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-
 
 __webpack_require__(/*! leaflet.path.drag */ "./node_modules/leaflet.path.drag/src/Path.Drag.js");
 
@@ -2249,13 +2245,15 @@ function () {
    *
    * @return an instance of Limapper
    */
-  function Limapper() {
+  function Limapper(leaflet) {
     _classCallCheck(this, Limapper);
 
-    this._name = 'limapper';
-    this._latestItem = null;
-    this._selectedItem = null;
-    this._identity = 1;
+    var that = this;
+    that._name = 'limapper';
+    that._latestItem = null;
+    that._selectedItem = null;
+    that._identity = 1;
+    that.L = leaflet || window.L;
   }
   /**
    * get name
@@ -2272,17 +2270,17 @@ function () {
      * @return {object}      item or null if no data found
      */
     value: function getMapData(item) {
-      var self = this;
+      var that = this;
       var v = item;
 
-      if (!self._map) {
+      if (!that._map) {
         return null;
       }
 
-      var map = self._map;
-      var po = map.latLngToLayerPoint(new leaflet__WEBPACK_IMPORTED_MODULE_0___default.a.LatLng(0, 0)); // handle rectangle
+      var map = that._map;
+      var po = map.latLngToLayerPoint(new that.L.LatLng(0, 0)); // handle rectangle
 
-      if (v.editor instanceof leaflet__WEBPACK_IMPORTED_MODULE_0___default.a.Editable.RectangleEditor) {
+      if (v.editor instanceof that.L.Editable.RectangleEditor) {
         if (v._bounds) {
           if (!v.mapdata) {
             v.mapdata = {
@@ -2311,14 +2309,14 @@ function () {
   }, {
     key: "init",
     value: function init(opts) {
-      var self = this;
+      var that = this;
       var defs = {
         minZoom: 1,
         maxZoom: 5,
         center: [0, 0],
         zoom: 1,
         editable: true,
-        crs: leaflet__WEBPACK_IMPORTED_MODULE_0___default.a.CRS.Simple
+        crs: that.L.CRS.Simple
       };
       var southWest, northEast, bounds, map, layerPopup; // apply defaults
 
@@ -2326,15 +2324,15 @@ function () {
         opts[k] = opts[k] || defs[k];
       }
 
-      map = leaflet__WEBPACK_IMPORTED_MODULE_0___default.a.map(opts.elid || 'map', opts);
+      map = that.L.map(opts.elid || 'map', opts);
       southWest = map.unproject([0, opts.imageHeight]);
       northEast = map.unproject([opts.imageWidth, 0]);
-      bounds = new leaflet__WEBPACK_IMPORTED_MODULE_0___default.a.LatLngBounds(southWest, northEast);
-      leaflet__WEBPACK_IMPORTED_MODULE_0___default.a.imageOverlay(opts.imageUrl, bounds).addTo(map);
+      bounds = new that.L.LatLngBounds(southWest, northEast);
+      that.L.imageOverlay(opts.imageUrl, bounds).addTo(map);
       map.setMaxBounds(bounds);
-      this._map = map; // add new edit control with behavior
+      that._map = map; // add new edit control with behavior
 
-      leaflet__WEBPACK_IMPORTED_MODULE_0___default.a.EditControl = leaflet__WEBPACK_IMPORTED_MODULE_0___default.a.Control.extend({
+      that.L.EditControl = that.L.Control.extend({
         options: {
           position: 'topleft',
           callback: null,
@@ -2342,19 +2340,19 @@ function () {
           html: ''
         },
         onAdd: function onAdd(map) {
-          var container = leaflet__WEBPACK_IMPORTED_MODULE_0___default.a.DomUtil.create('div', 'leaflet-control leaflet-bar'),
-              link = leaflet__WEBPACK_IMPORTED_MODULE_0___default.a.DomUtil.create('a', '', container);
+          var container = that.L.DomUtil.create('div', 'leaflet-control leaflet-bar'),
+              link = that.L.DomUtil.create('a', '', container);
           link.href = '#';
           link.title = 'Create a new ' + this.options.kind;
           link.innerHTML = this.options.html;
-          leaflet__WEBPACK_IMPORTED_MODULE_0___default.a.DomEvent.on(link, 'click', leaflet__WEBPACK_IMPORTED_MODULE_0___default.a.DomEvent.stop).on(link, 'click', function () {
+          that.L.DomEvent.on(link, 'click', L.DomEvent.stop).on(link, 'click', function () {
             window.LAYER = this.options.callback.call(map.editTools);
           }, this);
           return container;
         }
       }); // now create the rectangle control
 
-      leaflet__WEBPACK_IMPORTED_MODULE_0___default.a.NewRectangleControl = leaflet__WEBPACK_IMPORTED_MODULE_0___default.a.EditControl.extend({
+      that.L.NewRectangleControl = that.L.EditControl.extend({
         options: {
           position: 'topleft',
           callback: map.editTools.startRectangle,
@@ -2363,19 +2361,19 @@ function () {
         }
       }); // add the control to map
 
-      map.addControl(new leaflet__WEBPACK_IMPORTED_MODULE_0___default.a.NewRectangleControl()); // handle new item
+      map.addControl(new that.L.NewRectangleControl()); // handle new item
 
       map.on('layeradd', function (e) {
-        if (e.layer instanceof leaflet__WEBPACK_IMPORTED_MODULE_0___default.a.Path) {
+        if (e.layer instanceof that.L.Path) {
           var item = e.layer;
-          self._latestItem = item;
+          that._latestItem = item;
           item.mapdata = {
-            name: "Item #".concat(self._identity++)
+            name: "Item #".concat(that._identity++)
           };
-          item.on('dblclick', leaflet__WEBPACK_IMPORTED_MODULE_0___default.a.DomEvent.stop).on('dblclick', item.toggleEdit);
+          item.on('dblclick', that.L.DomEvent.stop).on('dblclick', item.toggleEdit);
           item.on('mouseover', function (e) {
             if (map && item.mapdata) {
-              layerPopup = leaflet__WEBPACK_IMPORTED_MODULE_0___default.a.popup().setLatLng(e.latlng).setContent(item.mapdata.name).openOn(map);
+              layerPopup = that.L.popup().setLatLng(e.latlng).setContent(item.mapdata.name).openOn(map);
             }
           });
           item.on('mouseout', function (e) {
@@ -2406,19 +2404,19 @@ function () {
   }, {
     key: "addItem",
     value: function addItem(mapData) {
-      var self = this;
+      var that = this;
       var rect = mapData.rect;
-      var layer = leaflet__WEBPACK_IMPORTED_MODULE_0___default.a.rectangle([self.p2ll(rect.x1, rect.y1), self.p2ll(rect.x2, rect.y2)]).addTo(self._map);
+      var layer = that.L.rectangle([that.p2ll(rect.x1, rect.y1), that.p2ll(rect.x2, rect.y2)]).addTo(that._map);
       layer.enableEdit();
       return layer;
     }
   }, {
     key: "addItems",
     value: function addItems(items) {
-      var self = this;
+      var that = this;
       var rst = [];
       items.forEach(function (i) {
-        var it = self.addItem(i);
+        var it = that.addItem(i);
         rst.push(it);
       });
       return it;
@@ -2443,15 +2441,15 @@ function () {
   }, {
     key: "items",
     get: function get() {
-      var self = this;
+      var that = this;
       var items = [];
 
-      if (!self._map) {
+      if (!that._map) {
         return items;
       }
 
-      self._map.eachLayer(function (v, k) {
-        if (self.getData(v)) {
+      that._map.eachLayer(function (v, k) {
+        if (that.getData(v)) {
           items.push(v);
         }
       });

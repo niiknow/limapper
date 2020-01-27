@@ -1,4 +1,3 @@
-import L from 'leaflet'
 require('leaflet.path.drag')
 require('leaflet-editable')
 
@@ -11,11 +10,13 @@ class Limapper {
    *
    * @return an instance of Limapper
    */
-  constructor() {
-    this._name = 'limapper'
-    this._latestItem = null
-    this._selectedItem = null
-    this._identity = 1
+  constructor(leaflet) {
+    const that = this
+    that._name         = 'limapper'
+    that._latestItem   = null
+    that._selectedItem = null
+    that._identity     = 1
+    that.L             = leaflet || window.L
   }
 
   /**
@@ -32,18 +33,18 @@ class Limapper {
    * @return {object}      item or null if no data found
    */
   getMapData(item) {
-    let self = this
+    const that = this
     let v = item
 
-    if (!self._map) {
+    if (!that._map) {
       return null
     }
 
-    let map = self._map
-    let po = map.latLngToLayerPoint(new L.LatLng(0, 0))
+    let map = that._map
+    let po = map.latLngToLayerPoint(new that.L.LatLng(0, 0))
 
     // handle rectangle
-    if (v.editor instanceof L.Editable.RectangleEditor) {
+    if (v.editor instanceof that.L.Editable.RectangleEditor) {
       if (v._bounds) {
         if (!v.mapdata) {
           v.mapdata = {rect: {}}
@@ -67,14 +68,14 @@ class Limapper {
    * @return {object}      self
    */
   init(opts) {
-    let self = this
-    let defs = {
+    const that = this
+    const defs = {
       minZoom: 1,
       maxZoom: 5,
       center: [0, 0],
       zoom: 1,
       editable: true,
-      crs: L.CRS.Simple
+      crs: that.L.CRS.Simple
     }
     let southWest, northEast, bounds, map, layerPopup
 
@@ -82,16 +83,16 @@ class Limapper {
     for (let k in defs) {
       opts[k] = opts[k] || defs[k]
     }
-    map = L.map(opts.elid || 'map', opts)
+    map = that.L.map(opts.elid || 'map', opts)
     southWest = map.unproject([0, opts.imageHeight])
     northEast = map.unproject([opts.imageWidth, 0])
-    bounds = new L.LatLngBounds(southWest, northEast)
-    L.imageOverlay(opts.imageUrl, bounds).addTo(map)
+    bounds = new that.L.LatLngBounds(southWest, northEast)
+    that.L.imageOverlay(opts.imageUrl, bounds).addTo(map)
     map.setMaxBounds(bounds)
-    this._map = map
+    that._map = map
 
     // add new edit control with behavior
-    L.EditControl = L.Control.extend({
+    that.L.EditControl = that.L.Control.extend({
       options: {
         position: 'topleft',
         callback: null,
@@ -99,13 +100,13 @@ class Limapper {
         html: ''
       },
       onAdd: function (map) {
-        let container = L.DomUtil.create('div', 'leaflet-control leaflet-bar'),
-          link = L.DomUtil.create('a', '', container)
+        const container = that.L.DomUtil.create('div', 'leaflet-control leaflet-bar'),
+          link = that.L.DomUtil.create('a', '', container)
 
         link.href = '#'
         link.title = 'Create a new ' + this.options.kind
         link.innerHTML = this.options.html
-        L.DomEvent
+        that.L.DomEvent
           .on(link, 'click', L.DomEvent.stop)
           .on(link, 'click', function () {
             window.LAYER = this.options.callback.call(map.editTools)
@@ -116,7 +117,7 @@ class Limapper {
     })
 
     // now create the rectangle control
-    L.NewRectangleControl = L.EditControl.extend({
+    that.L.NewRectangleControl = that.L.EditControl.extend({
       options: {
         position: 'topleft',
         callback: map.editTools.startRectangle,
@@ -126,19 +127,19 @@ class Limapper {
     })
 
     // add the control to map
-    map.addControl(new L.NewRectangleControl())
+    map.addControl(new that.L.NewRectangleControl())
 
     // handle new item
     map.on('layeradd', (e) => {
-      if (e.layer instanceof L.Path) {
+      if (e.layer instanceof that.L.Path) {
         let item = e.layer
 
-        self._latestItem = item
-        item.mapdata = {name: `Item #${self._identity++}` }
-        item.on('dblclick', L.DomEvent.stop).on('dblclick', item.toggleEdit)
+        that._latestItem = item
+        item.mapdata = {name: `Item #${that._identity++}` }
+        item.on('dblclick', that.L.DomEvent.stop).on('dblclick', item.toggleEdit)
         item.on('mouseover', (e) => {
           if (map && item.mapdata) {
-            layerPopup = L.popup()
+            layerPopup = that.L.popup()
             .setLatLng(e.latlng)
             .setContent(item.mapdata.name)
             .openOn(map)
@@ -162,15 +163,15 @@ class Limapper {
    * @return {Array} list of items
    */
   get items() {
-    let self = this
-    let items = []
+    const that = this
+    const items = []
 
-    if (!self._map) {
+    if (!that._map) {
       return items
     }
 
-    self._map.eachLayer((v, k) => {
-      if (self.getData(v)) {
+    that._map.eachLayer((v, k) => {
+      if (that.getData(v)) {
         items.push(v)
       }
     })
@@ -195,23 +196,23 @@ class Limapper {
    * @param {object} mapData item map data
    */
   addItem(mapData) {
-    let self = this
-    let rect = mapData.rect
+    const that = this
+    const rect = mapData.rect
 
-    var layer = L.rectangle(
-      [self.p2ll(rect.x1, rect.y1), self.p2ll(rect.x2, rect.y2)]
-    ).addTo(self._map)
+    var layer = that.L.rectangle(
+      [that.p2ll(rect.x1, rect.y1), that.p2ll(rect.x2, rect.y2)]
+    ).addTo(that._map)
 
     layer.enableEdit()
     return layer
   }
 
   addItems(items) {
-    let self = this
-    let rst = []
+    const that = this
+    const rst = []
 
     items.forEach(i => {
-      let it = self.addItem(i)
+      const it = that.addItem(i)
 
       rst.push(it)
     })
