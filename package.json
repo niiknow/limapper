@@ -1,6 +1,6 @@
 {
   "name": "limapper",
-  "version": "0.7.2",
+  "version": "0.7.3",
   "description": "Leaflet Image Mapper",
   "author": "Tom Noogen",
   "main": "dist/index.js",

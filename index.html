@@ -120,6 +120,7 @@ path.leaflet-path-draggable {
   <div class="main-wrapper">
     <div class="sidebar-right">
     hello world!
+    <a href="javascript:void(0)" onclick="clickMe()">Fit</a>
     </div>
 
     <input type="checkbox" id="nav-trigger" class="nav-trigger" />
@@ -142,6 +143,9 @@ path.leaflet-path-draggable {
       imageWidth: 958,
       imageHeight: 737
     });
+  function clickMe() {
+    mapper._map.setView([0, 0], 1);
+  }
 </script>
 
 <!-- jQuery -->

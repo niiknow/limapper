@@ -47,19 +47,17 @@ class Limapper {
     const po  = map.latLngToLayerPoint(new that.L.LatLng(0, 0))
 
     // handle rectangle
-    if (v.editor instanceof that.L.Editable.RectangleEditor) {
-      if (v._bounds) {
-        v.mapdata = v.mapdata || { rect: {} }
-        const nw = map.latLngToLayerPoint(v._bounds.getNorthWest())
-        const se = map.latLngToLayerPoint(v._bounds.getSouthEast())
+    if (v.mapdata && v._bounds) {
+      v.mapdata = v.mapdata || { rect: {} }
+      const nw = map.latLngToLayerPoint(v._bounds.getNorthWest())
+      const se = map.latLngToLayerPoint(v._bounds.getSouthEast())
 
-        v.mapdata.rect.x  = nw.x - po.x
-        v.mapdata.rect.xx = se.x - po.x
-        v.mapdata.rect.y  = nw.y - po.y
-        v.mapdata.rect.yy = se.y - po.y
+      v.mapdata.rect.x  = nw.x - po.x
+      v.mapdata.rect.xx = se.x - po.x
+      v.mapdata.rect.y  = nw.y - po.y
+      v.mapdata.rect.yy = se.y - po.y
 
-        return v
-      }
+      return v
     }
 
     return null
@@ -89,8 +87,8 @@ class Limapper {
     }
 
     map          = that.L.map(opts.elid || 'map', opts)
-    southWest    = map.unproject([0, opts.imageHeight], map.getMaxZoom())
-    northEast    = map.unproject([opts.imageWidth, 0], map.getMaxZoom())
+    southWest    = map.unproject([0, opts.imageHeight], map.getMaxZoom() - 1)
+    northEast    = map.unproject([opts.imageWidth, 0], map.getMaxZoom() - 1)
     bounds       = new that.L.LatLngBounds(southWest, northEast)
     that._map    = map
     that._image  = that.L.imageOverlay(opts.imageUrl, bounds).addTo(map)
@@ -181,9 +179,10 @@ class Limapper {
 
   /**
    * get items
-   * @return {Array} list of items
+   *
+   * @return Array list of items
    */
-  get items() {
+  getItems() {
     const that = this
     const items = []
 

@@ -2,7 +2,7 @@
  * limapper
  * Leaflet Image Mapper
 
- * @version v0.7.2
+ * @version v0.7.3
  * @author Tom Noogen
  * @homepage https://github.com/niiknow/limapper
  * @repository https://github.com/niiknow/limapper.git
@@ -2283,19 +2283,17 @@ function () {
       var map = that._map;
       var po = map.latLngToLayerPoint(new that.L.LatLng(0, 0)); // handle rectangle
 
-      if (v.editor instanceof that.L.Editable.RectangleEditor) {
-        if (v._bounds) {
-          v.mapdata = v.mapdata || {
-            rect: {}
-          };
-          var nw = map.latLngToLayerPoint(v._bounds.getNorthWest());
-          var se = map.latLngToLayerPoint(v._bounds.getSouthEast());
-          v.mapdata.rect.x = nw.x - po.x;
-          v.mapdata.rect.xx = se.x - po.x;
-          v.mapdata.rect.y = nw.y - po.y;
-          v.mapdata.rect.yy = se.y - po.y;
-          return v;
-        }
+      if (v.mapdata && v._bounds) {
+        v.mapdata = v.mapdata || {
+          rect: {}
+        };
+        var nw = map.latLngToLayerPoint(v._bounds.getNorthWest());
+        var se = map.latLngToLayerPoint(v._bounds.getSouthEast());
+        v.mapdata.rect.x = nw.x - po.x;
+        v.mapdata.rect.xx = se.x - po.x;
+        v.mapdata.rect.y = nw.y - po.y;
+        v.mapdata.rect.yy = se.y - po.y;
+        return v;
       }
 
       return null;
@@ -2326,8 +2324,8 @@ function () {
       }
 
       map = that.L.map(opts.elid || 'map', opts);
-      southWest = map.unproject([0, opts.imageHeight], map.getMaxZoom());
-      northEast = map.unproject([opts.imageWidth, 0], map.getMaxZoom());
+      southWest = map.unproject([0, opts.imageHeight], map.getMaxZoom() - 1);
+      northEast = map.unproject([opts.imageWidth, 0], map.getMaxZoom() - 1);
       bounds = new that.L.LatLngBounds(southWest, northEast);
       that._map = map;
       that._image = that.L.imageOverlay(opts.imageUrl, bounds).addTo(map);
@@ -2403,7 +2401,33 @@ function () {
     }
     /**
      * get items
-     * @return {Array} list of items
+     *
+     * @return Array list of items
+     */
+
+  }, {
+    key: "getItems",
+    value: function getItems() {
+      var that = this;
+      var items = [];
+
+      if (!that._map) {
+        return items;
+      }
+
+      that._map.eachLayer(function (v, k) {
+        // make sure we get the map data for all items
+        if (that.getMapData(v)) {
+          items.push(v);
+        }
+      });
+
+      return items;
+    }
+    /**
+     * get last item added
+     *
+     * @return Object last item added
      */
 
   }, {
@@ -2504,31 +2528,6 @@ function () {
     get: function get() {
       return this._name;
     }
-  }, {
-    key: "items",
-    get: function get() {
-      var that = this;
-      var items = [];
-
-      if (!that._map) {
-        return items;
-      }
-
-      that._map.eachLayer(function (v, k) {
-        // make sure we get the map data for all items
-        if (that.getMapData(v)) {
-          items.push(v);
-        }
-      });
-
-      return items;
-    }
-    /**
-     * get last item added
-     *
-     * @return Object last item added
-     */
-
   }, {
     key: "latestItem",
     get: function get() {
