@@ -2,7 +2,7 @@
  * limapper
  * Leaflet Image Mapper
 
- * @version v0.7.1
+ * @version v0.7.2
  * @author Tom Noogen
  * @homepage https://github.com/niiknow/limapper
  * @repository https://github.com/niiknow/limapper.git
@@ -2312,9 +2312,9 @@ function () {
     value: function init(opts) {
       var that = this;
       var defs = {
-        minZoom: 1,
-        maxZoom: 5,
-        center: [0, 0],
+        minZoom: opts.minZoom || -3,
+        maxZoom: opts.maxZoom || 1,
+        center: [0, -1 * opts.imageWidth],
         zoom: 1,
         editable: true,
         crs: that.L.CRS.Simple
@@ -2326,11 +2326,12 @@ function () {
       }
 
       map = that.L.map(opts.elid || 'map', opts);
-      southWest = map.unproject([0, opts.imageHeight]);
-      northEast = map.unproject([opts.imageWidth, 0]);
+      southWest = map.unproject([0, opts.imageHeight], map.getMaxZoom());
+      northEast = map.unproject([opts.imageWidth, 0], map.getMaxZoom());
       bounds = new that.L.LatLngBounds(southWest, northEast);
       that._map = map;
-      that.L.imageOverlay(opts.imageUrl, bounds).addTo(map);
+      that._image = that.L.imageOverlay(opts.imageUrl, bounds).addTo(map);
+      that._bounds = bounds;
       map.setMaxBounds(bounds); // add new edit control with behavior
 
       that.L.EditControl = that.L.Control.extend({

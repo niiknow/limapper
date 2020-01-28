@@ -81,6 +81,7 @@ if (process.env.NODE_ENV.trim() === 'build') {
   mix.version();
   mix.disableNotifications();
 } else {
+  mix.js(`src/index.js`, `${ public }`);
   mix.browserSync({
     proxy: false,
     port: 3000,

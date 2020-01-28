@@ -74,9 +74,9 @@ class Limapper {
   init(opts) {
     const that = this
     const defs = {
-      minZoom: 1,
-      maxZoom: 5,
-      center: [0, 0],
+      minZoom: opts.minZoom || -3,
+      maxZoom: opts.maxZoom || 1,
+      center: [0, -1 * opts.imageWidth],
       zoom: 1,
       editable: true,
       crs: that.L.CRS.Simple
@@ -88,13 +88,13 @@ class Limapper {
       opts[k] = opts[k] || defs[k]
     }
 
-    map       = that.L.map(opts.elid || 'map', opts)
-    southWest = map.unproject([0, opts.imageHeight])
-    northEast = map.unproject([opts.imageWidth, 0])
-    bounds    = new that.L.LatLngBounds(southWest, northEast)
-    that._map = map
-
-    that.L.imageOverlay(opts.imageUrl, bounds).addTo(map)
+    map          = that.L.map(opts.elid || 'map', opts)
+    southWest    = map.unproject([0, opts.imageHeight], map.getMaxZoom())
+    northEast    = map.unproject([opts.imageWidth, 0], map.getMaxZoom())
+    bounds       = new that.L.LatLngBounds(southWest, northEast)
+    that._map    = map
+    that._image  = that.L.imageOverlay(opts.imageUrl, bounds).addTo(map)
+    that._bounds = bounds
     map.setMaxBounds(bounds)
 
     // add new edit control with behavior
