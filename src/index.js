@@ -17,6 +17,7 @@ class Limapper {
     that._selectedItem = null
     that._identity     = 1
     that._editOnAdd    = false
+    that._dblclickEdit = false
     that.L             = leaflet || window.L
     that.win           = window
   }
@@ -142,7 +143,16 @@ class Limapper {
         that._latestItem = item
         item.mapdata = item.mapdata || { rect: {} }
         item.$ = { name: `Item #${that._identity++}` }
-        item.on('dblclick', that.L.DomEvent.stop).on('dblclick', item.toggleEdit)
+
+        // allow for double click event
+        item.on('dblclick', that.L.DomEvent.stop).on('dblclick', (e) => {
+          if (that._dblclickEdit) {
+            item.toggleEdit()
+          }
+
+          that.onDoubleClickItem(item, e)
+        })
+
         item.on('mouseover', (e) => {
           if (map && item.mapdata) {
             layerPopup = that.L.popup()
@@ -218,6 +228,17 @@ class Limapper {
    * @return Object  the item
    */
   onAddItem(item) {
+    return item
+  }
+
+  /**
+   * Handle item double click
+   *
+   * @param  Object item  item
+   * @param  Object event event
+   * @return Object   the item
+   */
+  onDoubleClickItem(item, event) {
     return item
   }
 

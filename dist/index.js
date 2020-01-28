@@ -2,7 +2,7 @@
  * limapper
  * Leaflet Image Mapper
 
- * @version v0.6.0
+ * @version v0.7.0
  * @author Tom Noogen
  * @homepage https://github.com/niiknow/limapper
  * @repository https://github.com/niiknow/limapper.git
@@ -2254,6 +2254,7 @@ function () {
     that._selectedItem = null;
     that._identity = 1;
     that._editOnAdd = false;
+    that._dblclickEdit = false;
     that.L = leaflet || window.L;
     that.win = window;
   }
@@ -2372,8 +2373,15 @@ function () {
           };
           item.$ = {
             name: "Item #".concat(that._identity++)
-          };
-          item.on('dblclick', that.L.DomEvent.stop).on('dblclick', item.toggleEdit);
+          }; // allow for double click event
+
+          item.on('dblclick', that.L.DomEvent.stop).on('dblclick', function (e) {
+            if (that._dblclickEdit) {
+              item.toggleEdit();
+            }
+
+            that.onDoubleClickItem(item, e);
+          });
           item.on('mouseover', function (e) {
             if (map && item.mapdata) {
               layerPopup = that.L.popup().setLatLng(e.latlng).setContent(that.renderPopup(item)).openOn(map);
@@ -2420,6 +2428,19 @@ function () {
   }, {
     key: "onAddItem",
     value: function onAddItem(item) {
+      return item;
+    }
+    /**
+     * Handle item double click
+     *
+     * @param  Object item  item
+     * @param  Object event event
+     * @return Object   the item
+     */
+
+  }, {
+    key: "onDoubleClickItem",
+    value: function onDoubleClickItem(item, event) {
       return item;
     }
     /**
