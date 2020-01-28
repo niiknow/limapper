@@ -16,7 +16,9 @@ class Limapper {
     that._latestItem   = null
     that._selectedItem = null
     that._identity     = 1
+    that._editOnAdd    = false
     that.L             = leaflet || window.L
+    that.win           = window
   }
 
   /**
@@ -34,38 +36,39 @@ class Limapper {
    */
   getMapData(item) {
     const that = this
-    let v = item
+    const v    = item
 
     if (!that._map) {
       return null
     }
 
-    let map = that._map
-    let po = map.latLngToLayerPoint(new that.L.LatLng(0, 0))
+    const map = that._map
+    const po  = map.latLngToLayerPoint(new that.L.LatLng(0, 0))
 
     // handle rectangle
     if (v.editor instanceof that.L.Editable.RectangleEditor) {
       if (v._bounds) {
-        if (!v.mapdata) {
-          v.mapdata = {rect: {}}
-        }
-        let nw = map.latLngToLayerPoint(v._bounds.getNorthWest())
-        let se = map.latLngToLayerPoint(v._bounds.getSouthEast())
+        v.mapdata = v.mapdata || { rect: {} }
+        const nw = map.latLngToLayerPoint(v._bounds.getNorthWest())
+        const se = map.latLngToLayerPoint(v._bounds.getSouthEast())
 
-        v.mapdata.rect.x1 = nw.x - po.x
-        v.mapdata.rect.x2 = se.x - po.x
-        v.mapdata.rect.y1 = nw.y - po.y
-        v.mapdata.rect.y2 = se.y - po.y
+        v.mapdata.rect.x  = nw.x - po.x
+        v.mapdata.rect.xx = se.x - po.x
+        v.mapdata.rect.y  = nw.y - po.y
+        v.mapdata.rect.yy = se.y - po.y
+
         return v
       }
     }
+
     return null
   }
 
   /**
    * initialize object
-   * @param  {object} opts options
-   * @return {object}      self
+   *
+   * @param  Object opts options { elid, imageWidth, imageHeight, imageUrl }
+   * @return Object      self
    */
   init(opts) {
     const that = this
@@ -83,13 +86,15 @@ class Limapper {
     for (let k in defs) {
       opts[k] = opts[k] || defs[k]
     }
-    map = that.L.map(opts.elid || 'map', opts)
+
+    map       = that.L.map(opts.elid || 'map', opts)
     southWest = map.unproject([0, opts.imageHeight])
     northEast = map.unproject([opts.imageWidth, 0])
-    bounds = new that.L.LatLngBounds(southWest, northEast)
+    bounds    = new that.L.LatLngBounds(southWest, northEast)
+    that._map = map
+
     that.L.imageOverlay(opts.imageUrl, bounds).addTo(map)
     map.setMaxBounds(bounds)
-    that._map = map
 
     // add new edit control with behavior
     that.L.EditControl = that.L.Control.extend({
@@ -103,13 +108,13 @@ class Limapper {
         const container = that.L.DomUtil.create('div', 'leaflet-control leaflet-bar'),
           link = that.L.DomUtil.create('a', '', container)
 
-        link.href = '#'
-        link.title = 'Create a new ' + this.options.kind
+        link.href      = '#'
+        link.title     = 'New shape: ' + this.options.kind
         link.innerHTML = this.options.html
         that.L.DomEvent
           .on(link, 'click', L.DomEvent.stop)
           .on(link, 'click', function () {
-            window.LAYER = this.options.callback.call(map.editTools)
+            that.win.LAYER = this.options.callback.call(map.editTools)
           }, this)
 
         return container
@@ -132,17 +137,20 @@ class Limapper {
     // handle new item
     map.on('layeradd', (e) => {
       if (e.layer instanceof that.L.Path) {
-        let item = e.layer
+        const item = e.layer
 
         that._latestItem = item
-        item.mapdata = {name: `Item #${that._identity++}` }
+        item.mapdata = item.mapdata || { rect: {} }
+        item.$ = { name: `Item #${that._identity++}` }
         item.on('dblclick', that.L.DomEvent.stop).on('dblclick', item.toggleEdit)
         item.on('mouseover', (e) => {
           if (map && item.mapdata) {
             layerPopup = that.L.popup()
             .setLatLng(e.latlng)
-            .setContent(item.mapdata.name)
+            .setContent(that.renderPopup(item))
             .openOn(map)
+
+            item.popup = layerPopup
           }
         })
 
@@ -150,8 +158,11 @@ class Limapper {
           if (layerPopup && map) {
             map.closePopup(layerPopup)
             layerPopup = null
+            item.popup = null
           }
         })
+
+        that.onAddItem(item)
       }
     })
 
@@ -171,7 +182,8 @@ class Limapper {
     }
 
     that._map.eachLayer((v, k) => {
-      if (that.getData(v)) {
+      // make sure we get the map data for all items
+      if (that.getMapData(v)) {
         items.push(v)
       }
     })
@@ -181,14 +193,32 @@ class Limapper {
 
   /**
    * get last item added
-   * @return {object} last item added
+   *
+   * @return Object last item added
    */
   get latestItem() {
     return this.getMapData(this._latestItem)
   }
 
+  /**
+   * Convert container point to lat long
+   *
+   * @param  Number x point x
+   * @param  Number y point y
+   * @return Object  leaflet lat long object
+   */
   p2ll(x, y) {
     return this._map.containerPointToLatLng([x, y])
+  }
+
+  /**
+   * Called after item add using the shape tool
+   *
+   * @param  Object item the layer item
+   * @return Object  the item
+   */
+  onAddItem(item) {
+    return item
   }
 
   /**
@@ -198,12 +228,16 @@ class Limapper {
   addItem(mapData) {
     const that = this
     const rect = mapData.rect
+    const layer = that.L.rectangle(
+      [that.p2ll(rect.x, rect.y), that.p2ll(rect.xx, rect.yy)]
+    )
 
-    var layer = that.L.rectangle(
-      [that.p2ll(rect.x1, rect.y1), that.p2ll(rect.x2, rect.y2)]
-    ).addTo(that._map)
+    layer.mapdata = mapData
+    layer.addTo(that._map)
+    if (that._editOnAdd) {
+      layer.enableEdit()
+    }
 
-    layer.enableEdit()
     return layer
   }
 
@@ -222,12 +256,22 @@ class Limapper {
 
   /**
    * remove item
-   * @param {object} item the map data item
+   * @param Object item the map data item
    */
   removeItem(item) {
     if (item && item.remove) {
       item.remove()
     }
+  }
+
+  /**
+   * render popup
+   *
+   * @param  Object item the map data item
+   * @return String      the render string
+   */
+  renderPopup(item) {
+    return item.$.name
   }
 }
 

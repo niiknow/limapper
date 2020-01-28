@@ -2,7 +2,7 @@
  * limapper
  * Leaflet Image Mapper
 
- * @version v0.5.0
+ * @version v0.6.0
  * @author Tom Noogen
  * @homepage https://github.com/niiknow/limapper
  * @repository https://github.com/niiknow/limapper.git
@@ -2253,7 +2253,9 @@ function () {
     that._latestItem = null;
     that._selectedItem = null;
     that._identity = 1;
+    that._editOnAdd = false;
     that.L = leaflet || window.L;
+    that.win = window;
   }
   /**
    * get name
@@ -2282,18 +2284,15 @@ function () {
 
       if (v.editor instanceof that.L.Editable.RectangleEditor) {
         if (v._bounds) {
-          if (!v.mapdata) {
-            v.mapdata = {
-              rect: {}
-            };
-          }
-
+          v.mapdata = v.mapdata || {
+            rect: {}
+          };
           var nw = map.latLngToLayerPoint(v._bounds.getNorthWest());
           var se = map.latLngToLayerPoint(v._bounds.getSouthEast());
-          v.mapdata.rect.x1 = nw.x - po.x;
-          v.mapdata.rect.x2 = se.x - po.x;
-          v.mapdata.rect.y1 = nw.y - po.y;
-          v.mapdata.rect.y2 = se.y - po.y;
+          v.mapdata.rect.x = nw.x - po.x;
+          v.mapdata.rect.xx = se.x - po.x;
+          v.mapdata.rect.y = nw.y - po.y;
+          v.mapdata.rect.yy = se.y - po.y;
           return v;
         }
       }
@@ -2302,8 +2301,9 @@ function () {
     }
     /**
      * initialize object
-     * @param  {object} opts options
-     * @return {object}      self
+     *
+     * @param  Object opts options { elid, imageWidth, imageHeight, imageUrl }
+     * @return Object      self
      */
 
   }, {
@@ -2328,9 +2328,9 @@ function () {
       southWest = map.unproject([0, opts.imageHeight]);
       northEast = map.unproject([opts.imageWidth, 0]);
       bounds = new that.L.LatLngBounds(southWest, northEast);
+      that._map = map;
       that.L.imageOverlay(opts.imageUrl, bounds).addTo(map);
-      map.setMaxBounds(bounds);
-      that._map = map; // add new edit control with behavior
+      map.setMaxBounds(bounds); // add new edit control with behavior
 
       that.L.EditControl = that.L.Control.extend({
         options: {
@@ -2343,10 +2343,10 @@ function () {
           var container = that.L.DomUtil.create('div', 'leaflet-control leaflet-bar'),
               link = that.L.DomUtil.create('a', '', container);
           link.href = '#';
-          link.title = 'Create a new ' + this.options.kind;
+          link.title = 'New shape: ' + this.options.kind;
           link.innerHTML = this.options.html;
           that.L.DomEvent.on(link, 'click', L.DomEvent.stop).on(link, 'click', function () {
-            window.LAYER = this.options.callback.call(map.editTools);
+            that.win.LAYER = this.options.callback.call(map.editTools);
           }, this);
           return container;
         }
@@ -2367,21 +2367,27 @@ function () {
         if (e.layer instanceof that.L.Path) {
           var item = e.layer;
           that._latestItem = item;
-          item.mapdata = {
+          item.mapdata = item.mapdata || {
+            rect: {}
+          };
+          item.$ = {
             name: "Item #".concat(that._identity++)
           };
           item.on('dblclick', that.L.DomEvent.stop).on('dblclick', item.toggleEdit);
           item.on('mouseover', function (e) {
             if (map && item.mapdata) {
-              layerPopup = that.L.popup().setLatLng(e.latlng).setContent(item.mapdata.name).openOn(map);
+              layerPopup = that.L.popup().setLatLng(e.latlng).setContent(that.renderPopup(item)).openOn(map);
+              item.popup = layerPopup;
             }
           });
           item.on('mouseout', function (e) {
             if (layerPopup && map) {
               map.closePopup(layerPopup);
               layerPopup = null;
+              item.popup = null;
             }
           });
+          that.onAddItem(item);
         }
       });
       return self;
@@ -2393,8 +2399,28 @@ function () {
 
   }, {
     key: "p2ll",
+
+    /**
+     * Convert container point to lat long
+     *
+     * @param  Number x point x
+     * @param  Number y point y
+     * @return Object  leaflet lat long object
+     */
     value: function p2ll(x, y) {
       return this._map.containerPointToLatLng([x, y]);
+    }
+    /**
+     * Called after item add using the shape tool
+     *
+     * @param  Object item the layer item
+     * @return Object  the item
+     */
+
+  }, {
+    key: "onAddItem",
+    value: function onAddItem(item) {
+      return item;
     }
     /**
      * add a single pixel coordinates item
@@ -2406,8 +2432,14 @@ function () {
     value: function addItem(mapData) {
       var that = this;
       var rect = mapData.rect;
-      var layer = that.L.rectangle([that.p2ll(rect.x1, rect.y1), that.p2ll(rect.x2, rect.y2)]).addTo(that._map);
-      layer.enableEdit();
+      var layer = that.L.rectangle([that.p2ll(rect.x, rect.y), that.p2ll(rect.xx, rect.yy)]);
+      layer.mapdata = mapData;
+      layer.addTo(that._map);
+
+      if (that._editOnAdd) {
+        layer.enableEdit();
+      }
+
       return layer;
     }
   }, {
@@ -2423,7 +2455,7 @@ function () {
     }
     /**
      * remove item
-     * @param {object} item the map data item
+     * @param Object item the map data item
      */
 
   }, {
@@ -2432,6 +2464,18 @@ function () {
       if (item && item.remove) {
         item.remove();
       }
+    }
+    /**
+     * render popup
+     *
+     * @param  Object item the map data item
+     * @return String      the render string
+     */
+
+  }, {
+    key: "renderPopup",
+    value: function renderPopup(item) {
+      return item.$.name;
     }
   }, {
     key: "name",
@@ -2449,7 +2493,8 @@ function () {
       }
 
       that._map.eachLayer(function (v, k) {
-        if (that.getData(v)) {
+        // make sure we get the map data for all items
+        if (that.getMapData(v)) {
           items.push(v);
         }
       });
@@ -2458,7 +2503,8 @@ function () {
     }
     /**
      * get last item added
-     * @return {object} last item added
+     *
+     * @return Object last item added
      */
 
   }, {
