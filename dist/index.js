@@ -2,7 +2,7 @@
  * limapper
  * Leaflet Image Mapper
 
- * @version v0.7.0
+ * @version v0.7.1
  * @author Tom Noogen
  * @homepage https://github.com/niiknow/limapper
  * @repository https://github.com/niiknow/limapper.git
@@ -2346,7 +2346,7 @@ function () {
           link.href = '#';
           link.title = 'New shape: ' + this.options.kind;
           link.innerHTML = this.options.html;
-          that.L.DomEvent.on(link, 'click', L.DomEvent.stop).on(link, 'click', function () {
+          that.L.DomEvent.on(link, 'click', that.L.DomEvent.stop).on(link, 'click', function () {
             that.win.LAYER = this.options.callback.call(map.editTools);
           }, this);
           return container;

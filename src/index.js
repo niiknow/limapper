@@ -113,7 +113,7 @@ class Limapper {
         link.title     = 'New shape: ' + this.options.kind
         link.innerHTML = this.options.html
         that.L.DomEvent
-          .on(link, 'click', L.DomEvent.stop)
+          .on(link, 'click', that.L.DomEvent.stop)
           .on(link, 'click', function () {
             that.win.LAYER = this.options.callback.call(map.editTools)
           }, this)
