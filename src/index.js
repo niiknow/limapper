@@ -1,5 +1,7 @@
-require('leaflet.path.drag')
-require('leaflet-editable')
+import 'leaflet.path.drag'
+import 'leaflet-editable'
+import 'leaflet-contextmenu'
+import 'leaflet-contextmenu/dist/leaflet.contextmenu.css'
 
 /**
  * Leaflet Image Mapper
@@ -10,16 +12,17 @@ class Limapper {
    *
    * @return an instance of Limapper
    */
-  constructor(leaflet) {
-    const that = this
+  constructor() {
+    const that         = this
     that._name         = 'limapper'
     that._latestItem   = null
     that._selectedItem = null
     that._identity     = 1
     that._editOnAdd    = false
     that._dblclickEdit = false
-    that.L             = leaflet || window.L
+    that._disablePopup = false
     that.win           = window
+    that.L             = that.win.L
   }
 
   /**
@@ -139,8 +142,9 @@ class Limapper {
         const item = e.layer
 
         that._latestItem = item
-        item.mapdata = item.mapdata || { rect: {} }
-        item.$ = { name: `Item #${that._identity++}` }
+        item.mapdata     = item.mapdata || { rect: {} }
+        item.$           = { id: that._identity++ }
+        item.$.name      = `Item #${item.$.id}`
 
         // allow for double click event
         item.on('dblclick', that.L.DomEvent.stop).on('dblclick', (e) => {
@@ -151,30 +155,38 @@ class Limapper {
           that.onDoubleClickItem(item, e)
         })
 
-        item.on('mouseover', (e) => {
-          if (map && item.mapdata) {
-            layerPopup = that.L.popup()
-            .setLatLng(e.latlng)
-            .setContent(that.renderPopup(item))
-            .openOn(map)
+        if (!that._disablePopup) {
+          item.on('mouseover', (e) => {
+            if (map && item.mapdata) {
+              layerPopup = that.L.popup()
+              .setLatLng(e.latlng)
+              .setContent(that.renderPopup(item))
+              .openOn(map)
 
-            item.popup = layerPopup
-          }
-        })
+              item.popup = layerPopup
+            }
+          })
 
-        item.on('mouseout', (e) => {
-          if (layerPopup && map) {
-            map.closePopup(layerPopup)
-            layerPopup = null
-            item.popup = null
-          }
-        })
+          item.on('mouseout', (e) => {
+            if (layerPopup && map) {
+              map.closePopup(layerPopup)
+              layerPopup = null
+              item.popup = null
+            }
+          })
+        }
 
         that.onAddItem(item)
       }
     })
 
-    return self
+    setTimeout(() => {
+      map.contextmenu.showAt(that.p2ll([0,0]))
+      map.contextmenu.hide()
+    }, 200)
+
+
+    return that
   }
 
   /**
@@ -230,6 +242,17 @@ class Limapper {
     return item
   }
 
+
+  /**
+   * Called before add of item to layer
+   *
+   * @param  Object item the layer item
+   * @return Object  the item
+   */
+  onAddingItem(item) {
+    return item
+  }
+
   /**
    * Handle item double click
    *
@@ -243,35 +266,27 @@ class Limapper {
 
   /**
    * add a single pixel coordinates item
-   * @param {object} mapData item map data
+   *
+   * @param Object mapData item map data
+   * @param Object opts optional layer option
    */
-  addItem(mapData) {
+  addItem(mapData, opts = { contextmenu: true }) {
     const that = this
     const rect = mapData.rect
     const layer = that.L.rectangle(
-      [that.p2ll(rect.x, rect.y), that.p2ll(rect.xx, rect.yy)]
+      [that.p2ll(rect.x, rect.y), that.p2ll(rect.xx, rect.yy)], opts
     )
 
+    // add mapdata to layer
     layer.mapdata = mapData
+
     layer.addTo(that._map)
+
     if (that._editOnAdd) {
       layer.enableEdit()
     }
 
     return layer
-  }
-
-  addItems(items) {
-    const that = this
-    const rst = []
-
-    items.forEach(i => {
-      const it = that.addItem(i)
-
-      rst.push(it)
-    })
-
-    return it
   }
 
   /**
@@ -281,7 +296,18 @@ class Limapper {
   removeItem(item) {
     if (item && item.remove) {
       item.remove()
+      that.onRemoveItem(item)
     }
+  }
+
+  /**
+   * Handle item removed event
+   *
+   * @param  Object item  item
+   * @return Object   the item
+   */
+  onRemoveItem(item) {
+    return item
   }
 
   /**

@@ -2,7 +2,7 @@
  * limapper
  * Leaflet Image Mapper
 
- * @version v0.7.3
+ * @version v0.7.4
  * @author Tom Noogen
  * @homepage https://github.com/niiknow/limapper
  * @repository https://github.com/niiknow/limapper.git
@@ -104,6 +104,732 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ })
 /************************************************************************/
 /******/ ({
+
+/***/ "./node_modules/css-loader/index.js?!./node_modules/postcss-loader/src/index.js?!./node_modules/leaflet-contextmenu/dist/leaflet.contextmenu.css":
+/*!*******************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader??ref--5-1!./node_modules/postcss-loader/src??ref--5-2!./node_modules/leaflet-contextmenu/dist/leaflet.contextmenu.css ***!
+  \*******************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(/*! ../../css-loader/lib/css-base.js */ "./node_modules/css-loader/lib/css-base.js")(false);
+// imports
+
+
+// module
+exports.push([module.i, ".leaflet-contextmenu {\n    display: none;\n    box-shadow: 0 1px 7px rgba(0,0,0,0.4);\n    -webkit-border-radius: 4px;\n    border-radius: 4px;\n    padding: 4px 0;\n    background-color: #fff;\n    cursor: default;\n    -webkit-user-select: none;\n    -moz-user-select: none;\n    user-select: none;\n}\n\n.leaflet-contextmenu a.leaflet-contextmenu-item {\n    display: block;\n    color: #222;\n    font-size: 12px;\n    line-height: 20px;\n    text-decoration: none;\n    padding: 0 12px;\n    border-top: 1px solid transparent;\n    border-bottom: 1px solid transparent;\n    cursor: default;\n    outline: none;\n}\n\n.leaflet-contextmenu a.leaflet-contextmenu-item-disabled {\n    opacity: 0.5;\n}\n\n.leaflet-contextmenu a.leaflet-contextmenu-item.over {\n    background-color: #f4f4f4;\n    border-top: 1px solid #f0f0f0;\n    border-bottom: 1px solid #f0f0f0;\n}\n\n.leaflet-contextmenu a.leaflet-contextmenu-item-disabled.over {\n    background-color: inherit;\n    border-top: 1px solid transparent;\n    border-bottom: 1px solid transparent;\n}\n\n.leaflet-contextmenu-icon {\n    margin: 2px 8px 0 0;\n    width: 16px;\n    height: 16px;\n    float: left;\n    border: 0;\n}\n\n.leaflet-contextmenu-separator {\n    border-bottom: 1px solid #ccc;\n    margin: 5px 0;\n}\n", ""]);
+
+// exports
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/lib/css-base.js":
+/*!*************************************************!*\
+  !*** ./node_modules/css-loader/lib/css-base.js ***!
+  \*************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+/*
+	MIT License http://www.opensource.org/licenses/mit-license.php
+	Author Tobias Koppers @sokra
+*/
+// css base code, injected by the css-loader
+module.exports = function(useSourceMap) {
+	var list = [];
+
+	// return the list of modules as css string
+	list.toString = function toString() {
+		return this.map(function (item) {
+			var content = cssWithMappingToString(item, useSourceMap);
+			if(item[2]) {
+				return "@media " + item[2] + "{" + content + "}";
+			} else {
+				return content;
+			}
+		}).join("");
+	};
+
+	// import a list of modules into the list
+	list.i = function(modules, mediaQuery) {
+		if(typeof modules === "string")
+			modules = [[null, modules, ""]];
+		var alreadyImportedModules = {};
+		for(var i = 0; i < this.length; i++) {
+			var id = this[i][0];
+			if(typeof id === "number")
+				alreadyImportedModules[id] = true;
+		}
+		for(i = 0; i < modules.length; i++) {
+			var item = modules[i];
+			// skip already imported module
+			// this implementation is not 100% perfect for weird media query combinations
+			//  when a module is imported multiple times with different media queries.
+			//  I hope this will never occur (Hey this way we have smaller bundles)
+			if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
+				if(mediaQuery && !item[2]) {
+					item[2] = mediaQuery;
+				} else if(mediaQuery) {
+					item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
+				}
+				list.push(item);
+			}
+		}
+	};
+	return list;
+};
+
+function cssWithMappingToString(item, useSourceMap) {
+	var content = item[1] || '';
+	var cssMapping = item[3];
+	if (!cssMapping) {
+		return content;
+	}
+
+	if (useSourceMap && typeof btoa === 'function') {
+		var sourceMapping = toComment(cssMapping);
+		var sourceURLs = cssMapping.sources.map(function (source) {
+			return '/*# sourceURL=' + cssMapping.sourceRoot + source + ' */'
+		});
+
+		return [content].concat(sourceURLs).concat([sourceMapping]).join('\n');
+	}
+
+	return [content].join('\n');
+}
+
+// Adapted from convert-source-map (MIT)
+function toComment(sourceMap) {
+	// eslint-disable-next-line no-undef
+	var base64 = btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap))));
+	var data = 'sourceMappingURL=data:application/json;charset=utf-8;base64,' + base64;
+
+	return '/*# ' + data + ' */';
+}
+
+
+/***/ }),
+
+/***/ "./node_modules/leaflet-contextmenu/dist/leaflet.contextmenu.css":
+/*!***********************************************************************!*\
+  !*** ./node_modules/leaflet-contextmenu/dist/leaflet.contextmenu.css ***!
+  \***********************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+var content = __webpack_require__(/*! !../../css-loader??ref--5-1!../../postcss-loader/src??ref--5-2!./leaflet.contextmenu.css */ "./node_modules/css-loader/index.js?!./node_modules/postcss-loader/src/index.js?!./node_modules/leaflet-contextmenu/dist/leaflet.contextmenu.css");
+
+if(typeof content === 'string') content = [[module.i, content, '']];
+
+var transform;
+var insertInto;
+
+
+
+var options = {"hmr":true}
+
+options.transform = transform
+options.insertInto = undefined;
+
+var update = __webpack_require__(/*! ../../style-loader/lib/addStyles.js */ "./node_modules/style-loader/lib/addStyles.js")(content, options);
+
+if(content.locals) module.exports = content.locals;
+
+if(false) {}
+
+/***/ }),
+
+/***/ "./node_modules/leaflet-contextmenu/dist/leaflet.contextmenu.js":
+/*!**********************************************************************!*\
+  !*** ./node_modules/leaflet-contextmenu/dist/leaflet.contextmenu.js ***!
+  \**********************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*
+	Leaflet.contextmenu, a context menu for Leaflet.
+	(c) 2015, Adam Ratcliffe, GeoSmart Maps Limited
+
+	@preserve
+*/
+
+(function(factory) {
+	// Packaging/modules magic dance
+	var L;
+	if (true) {
+		// AMD
+		!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(/*! leaflet */ "leaflet")], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	} else {}
+})(function(L) {
+L.Map.mergeOptions({
+    contextmenuItems: []
+});
+
+L.Map.ContextMenu = L.Handler.extend({
+    _touchstart: L.Browser.msPointer ? 'MSPointerDown' : L.Browser.pointer ? 'pointerdown' : 'touchstart',
+    
+    statics: {
+        BASE_CLS: 'leaflet-contextmenu'
+    },
+    
+    initialize: function (map) {
+        L.Handler.prototype.initialize.call(this, map);
+        
+        this._items = [];
+        this._visible = false;
+
+        var container = this._container = L.DomUtil.create('div', L.Map.ContextMenu.BASE_CLS, map._container);
+        container.style.zIndex = 10000;
+        container.style.position = 'absolute';
+
+        if (map.options.contextmenuWidth) {
+            container.style.width = map.options.contextmenuWidth + 'px';
+        }
+
+        this._createItems();
+
+        L.DomEvent
+            .on(container, 'click', L.DomEvent.stop)
+            .on(container, 'mousedown', L.DomEvent.stop)
+            .on(container, 'dblclick', L.DomEvent.stop)
+            .on(container, 'contextmenu', L.DomEvent.stop);
+    },
+
+    addHooks: function () {
+        var container = this._map.getContainer();
+
+        L.DomEvent
+            .on(container, 'mouseleave', this._hide, this)
+            .on(document, 'keydown', this._onKeyDown, this);
+
+        if (L.Browser.touch) {
+            L.DomEvent.on(document, this._touchstart, this._hide, this);
+        }
+
+        this._map.on({
+            contextmenu: this._show,
+            mousedown: this._hide,
+            movestart: this._hide,
+            zoomstart: this._hide
+        }, this);
+    },
+
+    removeHooks: function () {
+        var container = this._map.getContainer();
+
+        L.DomEvent
+            .off(container, 'mouseleave', this._hide, this)
+            .off(document, 'keydown', this._onKeyDown, this);
+
+        if (L.Browser.touch) {
+            L.DomEvent.off(document, this._touchstart, this._hide, this);
+        }
+
+        this._map.off({
+            contextmenu: this._show,
+            mousedown: this._hide,
+            movestart: this._hide,
+            zoomstart: this._hide
+        }, this);
+    },
+
+    showAt: function (point, data) {
+        if (point instanceof L.LatLng) {
+            point = this._map.latLngToContainerPoint(point);
+        }
+        this._showAtPoint(point, data);
+    },
+
+    hide: function () {
+        this._hide();
+    },
+
+    addItem: function (options) {
+        return this.insertItem(options);
+    },
+
+    insertItem: function (options, index) {
+        index = index !== undefined ? index: this._items.length;
+
+        var item = this._createItem(this._container, options, index);
+
+        this._items.push(item);
+
+        this._sizeChanged = true;
+
+        this._map.fire('contextmenu.additem', {
+            contextmenu: this,
+            el: item.el,
+            index: index
+        });
+
+        return item.el;
+    },
+
+    removeItem: function (item) {
+        var container = this._container;
+
+        if (!isNaN(item)) {
+            item = container.children[item];
+        }
+
+        if (item) {
+            this._removeItem(L.Util.stamp(item));
+
+            this._sizeChanged = true;
+
+            this._map.fire('contextmenu.removeitem', {
+                contextmenu: this,
+                el: item
+            });
+
+            return item;
+        }
+
+        return null;
+    },
+
+    removeAllItems: function () {
+        var items = this._container.children,
+            item;
+
+        while (items.length) {
+            item = items[0];
+            this._removeItem(L.Util.stamp(item));
+        }
+        return items;
+    },
+
+    hideAllItems: function () {
+        var item, i, l;
+
+        for (i = 0, l = this._items.length; i < l; i++) {
+            item = this._items[i];
+            item.el.style.display = 'none';
+        }
+    },
+
+    showAllItems: function () {
+        var item, i, l;
+
+        for (i = 0, l = this._items.length; i < l; i++) {
+            item = this._items[i];
+            item.el.style.display = '';
+        }
+    },
+
+    setDisabled: function (item, disabled) {
+        var container = this._container,
+        itemCls = L.Map.ContextMenu.BASE_CLS + '-item';
+
+        if (!isNaN(item)) {
+            item = container.children[item];
+        }
+
+        if (item && L.DomUtil.hasClass(item, itemCls)) {
+            if (disabled) {
+                L.DomUtil.addClass(item, itemCls + '-disabled');
+                this._map.fire('contextmenu.disableitem', {
+                    contextmenu: this,
+                    el: item
+                });
+            } else {
+                L.DomUtil.removeClass(item, itemCls + '-disabled');
+                this._map.fire('contextmenu.enableitem', {
+                    contextmenu: this,
+                    el: item
+                });
+            }
+        }
+    },
+
+    isVisible: function () {
+        return this._visible;
+    },
+
+    _createItems: function () {
+        var itemOptions = this._map.options.contextmenuItems,
+            item,
+            i, l;
+
+        for (i = 0, l = itemOptions.length; i < l; i++) {
+            this._items.push(this._createItem(this._container, itemOptions[i]));
+        }
+    },
+
+    _createItem: function (container, options, index) {
+        if (options.separator || options === '-') {
+            return this._createSeparator(container, index);
+        }
+
+        var itemCls = L.Map.ContextMenu.BASE_CLS + '-item',
+            cls = options.disabled ? (itemCls + ' ' + itemCls + '-disabled') : itemCls,
+            el = this._insertElementAt('a', cls, container, index),
+            callback = this._createEventHandler(el, options.callback, options.context, options.hideOnSelect),
+            icon = this._getIcon(options),
+            iconCls = this._getIconCls(options),
+            html = '';
+
+        if (icon) {
+            html = '<img class="' + L.Map.ContextMenu.BASE_CLS + '-icon" src="' + icon + '"/>';
+        } else if (iconCls) {
+            html = '<span class="' + L.Map.ContextMenu.BASE_CLS + '-icon ' + iconCls + '"></span>';
+        }
+
+        el.innerHTML = html + options.text;
+        el.href = '#';
+
+        L.DomEvent
+            .on(el, 'mouseover', this._onItemMouseOver, this)
+            .on(el, 'mouseout', this._onItemMouseOut, this)
+            .on(el, 'mousedown', L.DomEvent.stopPropagation)
+            .on(el, 'click', callback);
+
+        if (L.Browser.touch) {
+            L.DomEvent.on(el, this._touchstart, L.DomEvent.stopPropagation);
+        }
+
+        // Devices without a mouse fire "mouseover" on tap, but never “mouseout"
+        if (!L.Browser.pointer) {
+            L.DomEvent.on(el, 'click', this._onItemMouseOut, this);
+        }
+
+        return {
+            id: L.Util.stamp(el),
+            el: el,
+            callback: callback
+        };
+    },
+
+    _removeItem: function (id) {
+        var item,
+            el,
+            i, l, callback;
+
+        for (i = 0, l = this._items.length; i < l; i++) {
+            item = this._items[i];
+
+            if (item.id === id) {
+                el = item.el;
+                callback = item.callback;
+
+                if (callback) {
+                    L.DomEvent
+                        .off(el, 'mouseover', this._onItemMouseOver, this)
+                        .off(el, 'mouseover', this._onItemMouseOut, this)
+                        .off(el, 'mousedown', L.DomEvent.stopPropagation)
+                        .off(el, 'click', callback);
+
+                    if (L.Browser.touch) {
+                        L.DomEvent.off(el, this._touchstart, L.DomEvent.stopPropagation);
+                    }
+
+                    if (!L.Browser.pointer) {
+                        L.DomEvent.on(el, 'click', this._onItemMouseOut, this);
+                    }
+                }
+
+                this._container.removeChild(el);
+                this._items.splice(i, 1);
+
+                return item;
+            }
+        }
+        return null;
+    },
+
+    _createSeparator: function (container, index) {
+        var el = this._insertElementAt('div', L.Map.ContextMenu.BASE_CLS + '-separator', container, index);
+
+        return {
+            id: L.Util.stamp(el),
+            el: el
+        };
+    },
+
+    _createEventHandler: function (el, func, context, hideOnSelect) {
+        var me = this,
+            map = this._map,
+            disabledCls = L.Map.ContextMenu.BASE_CLS + '-item-disabled',
+            hideOnSelect = (hideOnSelect !== undefined) ? hideOnSelect : true;
+
+        return function (e) {
+            if (L.DomUtil.hasClass(el, disabledCls)) {
+                return;
+            }
+
+            if (hideOnSelect) {
+                me._hide();
+            }
+
+            if (func) {
+                func.call(context || map, me._showLocation);
+            }
+
+            me._map.fire('contextmenu.select', {
+                contextmenu: me,
+                el: el
+            });
+        };
+    },
+
+    _insertElementAt: function (tagName, className, container, index) {
+        var refEl,
+            el = document.createElement(tagName);
+
+        el.className = className;
+
+        if (index !== undefined) {
+            refEl = container.children[index];
+        }
+
+        if (refEl) {
+            container.insertBefore(el, refEl);
+        } else {
+            container.appendChild(el);
+        }
+
+        return el;
+    },
+
+    _show: function (e) {
+        this._showAtPoint(e.containerPoint, e);
+    },
+
+    _showAtPoint: function (pt, data) {
+        if (this._items.length) {
+            var map = this._map,
+            layerPoint = map.containerPointToLayerPoint(pt),
+            latlng = map.layerPointToLatLng(layerPoint),
+            event = L.extend(data || {}, {contextmenu: this});
+
+            this._showLocation = {
+                latlng: latlng,
+                layerPoint: layerPoint,
+                containerPoint: pt
+            };
+
+            if (data && data.relatedTarget){
+                this._showLocation.relatedTarget = data.relatedTarget;
+            }
+
+            this._setPosition(pt);
+
+            if (!this._visible) {
+                this._container.style.display = 'block';
+                this._visible = true;
+            }
+
+            this._map.fire('contextmenu.show', event);
+        }
+    },
+
+    _hide: function () {
+        if (this._visible) {
+            this._visible = false;
+            this._container.style.display = 'none';
+            this._map.fire('contextmenu.hide', {contextmenu: this});
+        }
+    },
+
+    _getIcon: function (options) {
+        return L.Browser.retina && options.retinaIcon || options.icon;
+    },
+
+    _getIconCls: function (options) {
+        return L.Browser.retina && options.retinaIconCls || options.iconCls;
+    },
+
+    _setPosition: function (pt) {
+        var mapSize = this._map.getSize(),
+            container = this._container,
+            containerSize = this._getElementSize(container),
+            anchor;
+
+        if (this._map.options.contextmenuAnchor) {
+            anchor = L.point(this._map.options.contextmenuAnchor);
+            pt = pt.add(anchor);
+        }
+
+        container._leaflet_pos = pt;
+
+        if (pt.x + containerSize.x > mapSize.x) {
+            container.style.left = 'auto';
+            container.style.right = Math.min(Math.max(mapSize.x - pt.x, 0), mapSize.x - containerSize.x - 1) + 'px';
+        } else {
+            container.style.left = Math.max(pt.x, 0) + 'px';
+            container.style.right = 'auto';
+        }
+
+        if (pt.y + containerSize.y > mapSize.y) {
+            container.style.top = 'auto';
+            container.style.bottom = Math.min(Math.max(mapSize.y - pt.y, 0), mapSize.y - containerSize.y - 1) + 'px';
+        } else {
+            container.style.top = Math.max(pt.y, 0) + 'px';
+            container.style.bottom = 'auto';
+        }
+    },
+
+    _getElementSize: function (el) {
+        var size = this._size,
+            initialDisplay = el.style.display;
+
+        if (!size || this._sizeChanged) {
+            size = {};
+
+            el.style.left = '-999999px';
+            el.style.right = 'auto';
+            el.style.display = 'block';
+
+            size.x = el.offsetWidth;
+            size.y = el.offsetHeight;
+
+            el.style.left = 'auto';
+            el.style.display = initialDisplay;
+
+            this._sizeChanged = false;
+        }
+
+        return size;
+    },
+
+    _onKeyDown: function (e) {
+        var key = e.keyCode;
+
+        // If ESC pressed and context menu is visible hide it
+        if (key === 27) {
+            this._hide();
+        }
+    },
+
+    _onItemMouseOver: function (e) {
+        L.DomUtil.addClass(e.target || e.srcElement, 'over');
+    },
+
+    _onItemMouseOut: function (e) {
+        L.DomUtil.removeClass(e.target || e.srcElement, 'over');
+    }
+});
+
+L.Map.addInitHook('addHandler', 'contextmenu', L.Map.ContextMenu);
+L.Mixin.ContextMenu = {
+    bindContextMenu: function (options) {
+        L.setOptions(this, options);
+        this._initContextMenu();
+
+        return this;
+    },
+
+    unbindContextMenu: function (){
+        this.off('contextmenu', this._showContextMenu, this);
+
+        return this;
+    },
+
+    addContextMenuItem: function (item) {
+            this.options.contextmenuItems.push(item);
+    },
+
+    removeContextMenuItemWithIndex: function (index) {
+        var items = [];
+        for (var i = 0; i < this.options.contextmenuItems.length; i++) {
+            if (this.options.contextmenuItems[i].index == index){
+                items.push(i);
+            }
+        }
+        var elem = items.pop();
+        while (elem !== undefined) {
+            this.options.contextmenuItems.splice(elem,1);
+            elem = items.pop();
+        }
+    },
+
+    replaceContextMenuItem: function (item) {
+        this.removeContextMenuItemWithIndex(item.index);
+        this.addContextMenuItem(item);
+    },
+
+    _initContextMenu: function () {
+        this._items = [];
+
+        this.on('contextmenu', this._showContextMenu, this);
+    },
+
+    _showContextMenu: function (e) {
+        var itemOptions,
+            data, pt, i, l;
+
+        if (this._map.contextmenu) {
+            data = L.extend({relatedTarget: this}, e);
+
+            pt = this._map.mouseEventToContainerPoint(e.originalEvent);
+
+            if (!this.options.contextmenuInheritItems) {
+                this._map.contextmenu.hideAllItems();
+            }
+
+            for (i = 0, l = this.options.contextmenuItems.length; i < l; i++) {
+                itemOptions = this.options.contextmenuItems[i];
+                this._items.push(this._map.contextmenu.insertItem(itemOptions, itemOptions.index));
+            }
+
+            this._map.once('contextmenu.hide', this._hideContextMenu, this);
+
+            this._map.contextmenu.showAt(pt, data);
+        }
+    },
+
+    _hideContextMenu: function () {
+        var i, l;
+
+        for (i = 0, l = this._items.length; i < l; i++) {
+            this._map.contextmenu.removeItem(this._items[i]);
+        }
+        this._items.length = 0;
+
+        if (!this.options.contextmenuInheritItems) {
+            this._map.contextmenu.showAllItems();
+        }
+    }
+};
+
+var classes = [L.Marker, L.Path],
+    defaultOptions = {
+        contextmenu: false,
+        contextmenuItems: [],
+        contextmenuInheritItems: true
+    },
+    cls, i, l;
+
+for (i = 0, l = classes.length; i < l; i++) {
+    cls = classes[i];
+
+    // L.Class should probably provide an empty options hash, as it does not test
+    // for it here and add if needed
+    if (!cls.prototype.options) {
+        cls.prototype.options = defaultOptions;
+    } else {
+        cls.mergeOptions(defaultOptions);
+    }
+
+    cls.addInitHook(function () {
+        if (this.options.contextmenu) {
+            this._initContextMenu();
+        }
+    });
+
+    cls.include(L.Mixin.ContextMenu);
+}
+return L.Map.ContextMenu;
+});
+
+
+/***/ }),
 
 /***/ "./node_modules/leaflet-editable/src/Leaflet.Editable.js":
 /*!***************************************************************!*\
@@ -2214,6 +2940,515 @@ L.Path.addInitHook(function () {
 
 /***/ }),
 
+/***/ "./node_modules/style-loader/lib/addStyles.js":
+/*!****************************************************!*\
+  !*** ./node_modules/style-loader/lib/addStyles.js ***!
+  \****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+/*
+	MIT License http://www.opensource.org/licenses/mit-license.php
+	Author Tobias Koppers @sokra
+*/
+
+var stylesInDom = {};
+
+var	memoize = function (fn) {
+	var memo;
+
+	return function () {
+		if (typeof memo === "undefined") memo = fn.apply(this, arguments);
+		return memo;
+	};
+};
+
+var isOldIE = memoize(function () {
+	// Test for IE <= 9 as proposed by Browserhacks
+	// @see http://browserhacks.com/#hack-e71d8692f65334173fee715c222cb805
+	// Tests for existence of standard globals is to allow style-loader
+	// to operate correctly into non-standard environments
+	// @see https://github.com/webpack-contrib/style-loader/issues/177
+	return window && document && document.all && !window.atob;
+});
+
+var getTarget = function (target, parent) {
+  if (parent){
+    return parent.querySelector(target);
+  }
+  return document.querySelector(target);
+};
+
+var getElement = (function (fn) {
+	var memo = {};
+
+	return function(target, parent) {
+                // If passing function in options, then use it for resolve "head" element.
+                // Useful for Shadow Root style i.e
+                // {
+                //   insertInto: function () { return document.querySelector("#foo").shadowRoot }
+                // }
+                if (typeof target === 'function') {
+                        return target();
+                }
+                if (typeof memo[target] === "undefined") {
+			var styleTarget = getTarget.call(this, target, parent);
+			// Special case to return head of iframe instead of iframe itself
+			if (window.HTMLIFrameElement && styleTarget instanceof window.HTMLIFrameElement) {
+				try {
+					// This will throw an exception if access to iframe is blocked
+					// due to cross-origin restrictions
+					styleTarget = styleTarget.contentDocument.head;
+				} catch(e) {
+					styleTarget = null;
+				}
+			}
+			memo[target] = styleTarget;
+		}
+		return memo[target]
+	};
+})();
+
+var singleton = null;
+var	singletonCounter = 0;
+var	stylesInsertedAtTop = [];
+
+var	fixUrls = __webpack_require__(/*! ./urls */ "./node_modules/style-loader/lib/urls.js");
+
+module.exports = function(list, options) {
+	if (typeof DEBUG !== "undefined" && DEBUG) {
+		if (typeof document !== "object") throw new Error("The style-loader cannot be used in a non-browser environment");
+	}
+
+	options = options || {};
+
+	options.attrs = typeof options.attrs === "object" ? options.attrs : {};
+
+	// Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
+	// tags it will allow on a page
+	if (!options.singleton && typeof options.singleton !== "boolean") options.singleton = isOldIE();
+
+	// By default, add <style> tags to the <head> element
+        if (!options.insertInto) options.insertInto = "head";
+
+	// By default, add <style> tags to the bottom of the target
+	if (!options.insertAt) options.insertAt = "bottom";
+
+	var styles = listToStyles(list, options);
+
+	addStylesToDom(styles, options);
+
+	return function update (newList) {
+		var mayRemove = [];
+
+		for (var i = 0; i < styles.length; i++) {
+			var item = styles[i];
+			var domStyle = stylesInDom[item.id];
+
+			domStyle.refs--;
+			mayRemove.push(domStyle);
+		}
+
+		if(newList) {
+			var newStyles = listToStyles(newList, options);
+			addStylesToDom(newStyles, options);
+		}
+
+		for (var i = 0; i < mayRemove.length; i++) {
+			var domStyle = mayRemove[i];
+
+			if(domStyle.refs === 0) {
+				for (var j = 0; j < domStyle.parts.length; j++) domStyle.parts[j]();
+
+				delete stylesInDom[domStyle.id];
+			}
+		}
+	};
+};
+
+function addStylesToDom (styles, options) {
+	for (var i = 0; i < styles.length; i++) {
+		var item = styles[i];
+		var domStyle = stylesInDom[item.id];
+
+		if(domStyle) {
+			domStyle.refs++;
+
+			for(var j = 0; j < domStyle.parts.length; j++) {
+				domStyle.parts[j](item.parts[j]);
+			}
+
+			for(; j < item.parts.length; j++) {
+				domStyle.parts.push(addStyle(item.parts[j], options));
+			}
+		} else {
+			var parts = [];
+
+			for(var j = 0; j < item.parts.length; j++) {
+				parts.push(addStyle(item.parts[j], options));
+			}
+
+			stylesInDom[item.id] = {id: item.id, refs: 1, parts: parts};
+		}
+	}
+}
+
+function listToStyles (list, options) {
+	var styles = [];
+	var newStyles = {};
+
+	for (var i = 0; i < list.length; i++) {
+		var item = list[i];
+		var id = options.base ? item[0] + options.base : item[0];
+		var css = item[1];
+		var media = item[2];
+		var sourceMap = item[3];
+		var part = {css: css, media: media, sourceMap: sourceMap};
+
+		if(!newStyles[id]) styles.push(newStyles[id] = {id: id, parts: [part]});
+		else newStyles[id].parts.push(part);
+	}
+
+	return styles;
+}
+
+function insertStyleElement (options, style) {
+	var target = getElement(options.insertInto)
+
+	if (!target) {
+		throw new Error("Couldn't find a style target. This probably means that the value for the 'insertInto' parameter is invalid.");
+	}
+
+	var lastStyleElementInsertedAtTop = stylesInsertedAtTop[stylesInsertedAtTop.length - 1];
+
+	if (options.insertAt === "top") {
+		if (!lastStyleElementInsertedAtTop) {
+			target.insertBefore(style, target.firstChild);
+		} else if (lastStyleElementInsertedAtTop.nextSibling) {
+			target.insertBefore(style, lastStyleElementInsertedAtTop.nextSibling);
+		} else {
+			target.appendChild(style);
+		}
+		stylesInsertedAtTop.push(style);
+	} else if (options.insertAt === "bottom") {
+		target.appendChild(style);
+	} else if (typeof options.insertAt === "object" && options.insertAt.before) {
+		var nextSibling = getElement(options.insertAt.before, target);
+		target.insertBefore(style, nextSibling);
+	} else {
+		throw new Error("[Style Loader]\n\n Invalid value for parameter 'insertAt' ('options.insertAt') found.\n Must be 'top', 'bottom', or Object.\n (https://github.com/webpack-contrib/style-loader#insertat)\n");
+	}
+}
+
+function removeStyleElement (style) {
+	if (style.parentNode === null) return false;
+	style.parentNode.removeChild(style);
+
+	var idx = stylesInsertedAtTop.indexOf(style);
+	if(idx >= 0) {
+		stylesInsertedAtTop.splice(idx, 1);
+	}
+}
+
+function createStyleElement (options) {
+	var style = document.createElement("style");
+
+	if(options.attrs.type === undefined) {
+		options.attrs.type = "text/css";
+	}
+
+	if(options.attrs.nonce === undefined) {
+		var nonce = getNonce();
+		if (nonce) {
+			options.attrs.nonce = nonce;
+		}
+	}
+
+	addAttrs(style, options.attrs);
+	insertStyleElement(options, style);
+
+	return style;
+}
+
+function createLinkElement (options) {
+	var link = document.createElement("link");
+
+	if(options.attrs.type === undefined) {
+		options.attrs.type = "text/css";
+	}
+	options.attrs.rel = "stylesheet";
+
+	addAttrs(link, options.attrs);
+	insertStyleElement(options, link);
+
+	return link;
+}
+
+function addAttrs (el, attrs) {
+	Object.keys(attrs).forEach(function (key) {
+		el.setAttribute(key, attrs[key]);
+	});
+}
+
+function getNonce() {
+	if (false) {}
+
+	return __webpack_require__.nc;
+}
+
+function addStyle (obj, options) {
+	var style, update, remove, result;
+
+	// If a transform function was defined, run it on the css
+	if (options.transform && obj.css) {
+	    result = typeof options.transform === 'function'
+		 ? options.transform(obj.css) 
+		 : options.transform.default(obj.css);
+
+	    if (result) {
+	    	// If transform returns a value, use that instead of the original css.
+	    	// This allows running runtime transformations on the css.
+	    	obj.css = result;
+	    } else {
+	    	// If the transform function returns a falsy value, don't add this css.
+	    	// This allows conditional loading of css
+	    	return function() {
+	    		// noop
+	    	};
+	    }
+	}
+
+	if (options.singleton) {
+		var styleIndex = singletonCounter++;
+
+		style = singleton || (singleton = createStyleElement(options));
+
+		update = applyToSingletonTag.bind(null, style, styleIndex, false);
+		remove = applyToSingletonTag.bind(null, style, styleIndex, true);
+
+	} else if (
+		obj.sourceMap &&
+		typeof URL === "function" &&
+		typeof URL.createObjectURL === "function" &&
+		typeof URL.revokeObjectURL === "function" &&
+		typeof Blob === "function" &&
+		typeof btoa === "function"
+	) {
+		style = createLinkElement(options);
+		update = updateLink.bind(null, style, options);
+		remove = function () {
+			removeStyleElement(style);
+
+			if(style.href) URL.revokeObjectURL(style.href);
+		};
+	} else {
+		style = createStyleElement(options);
+		update = applyToTag.bind(null, style);
+		remove = function () {
+			removeStyleElement(style);
+		};
+	}
+
+	update(obj);
+
+	return function updateStyle (newObj) {
+		if (newObj) {
+			if (
+				newObj.css === obj.css &&
+				newObj.media === obj.media &&
+				newObj.sourceMap === obj.sourceMap
+			) {
+				return;
+			}
+
+			update(obj = newObj);
+		} else {
+			remove();
+		}
+	};
+}
+
+var replaceText = (function () {
+	var textStore = [];
+
+	return function (index, replacement) {
+		textStore[index] = replacement;
+
+		return textStore.filter(Boolean).join('\n');
+	};
+})();
+
+function applyToSingletonTag (style, index, remove, obj) {
+	var css = remove ? "" : obj.css;
+
+	if (style.styleSheet) {
+		style.styleSheet.cssText = replaceText(index, css);
+	} else {
+		var cssNode = document.createTextNode(css);
+		var childNodes = style.childNodes;
+
+		if (childNodes[index]) style.removeChild(childNodes[index]);
+
+		if (childNodes.length) {
+			style.insertBefore(cssNode, childNodes[index]);
+		} else {
+			style.appendChild(cssNode);
+		}
+	}
+}
+
+function applyToTag (style, obj) {
+	var css = obj.css;
+	var media = obj.media;
+
+	if(media) {
+		style.setAttribute("media", media)
+	}
+
+	if(style.styleSheet) {
+		style.styleSheet.cssText = css;
+	} else {
+		while(style.firstChild) {
+			style.removeChild(style.firstChild);
+		}
+
+		style.appendChild(document.createTextNode(css));
+	}
+}
+
+function updateLink (link, options, obj) {
+	var css = obj.css;
+	var sourceMap = obj.sourceMap;
+
+	/*
+		If convertToAbsoluteUrls isn't defined, but sourcemaps are enabled
+		and there is no publicPath defined then lets turn convertToAbsoluteUrls
+		on by default.  Otherwise default to the convertToAbsoluteUrls option
+		directly
+	*/
+	var autoFixUrls = options.convertToAbsoluteUrls === undefined && sourceMap;
+
+	if (options.convertToAbsoluteUrls || autoFixUrls) {
+		css = fixUrls(css);
+	}
+
+	if (sourceMap) {
+		// http://stackoverflow.com/a/26603875
+		css += "\n/*# sourceMappingURL=data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))) + " */";
+	}
+
+	var blob = new Blob([css], { type: "text/css" });
+
+	var oldSrc = link.href;
+
+	link.href = URL.createObjectURL(blob);
+
+	if(oldSrc) URL.revokeObjectURL(oldSrc);
+}
+
+
+/***/ }),
+
+/***/ "./node_modules/style-loader/lib/urls.js":
+/*!***********************************************!*\
+  !*** ./node_modules/style-loader/lib/urls.js ***!
+  \***********************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+
+/**
+ * When source maps are enabled, `style-loader` uses a link element with a data-uri to
+ * embed the css on the page. This breaks all relative urls because now they are relative to a
+ * bundle instead of the current page.
+ *
+ * One solution is to only use full urls, but that may be impossible.
+ *
+ * Instead, this function "fixes" the relative urls to be absolute according to the current page location.
+ *
+ * A rudimentary test suite is located at `test/fixUrls.js` and can be run via the `npm test` command.
+ *
+ */
+
+module.exports = function (css) {
+  // get current location
+  var location = typeof window !== "undefined" && window.location;
+
+  if (!location) {
+    throw new Error("fixUrls requires window.location");
+  }
+
+	// blank or null?
+	if (!css || typeof css !== "string") {
+	  return css;
+  }
+
+  var baseUrl = location.protocol + "//" + location.host;
+  var currentDir = baseUrl + location.pathname.replace(/\/[^\/]*$/, "/");
+
+	// convert each url(...)
+	/*
+	This regular expression is just a way to recursively match brackets within
+	a string.
+
+	 /url\s*\(  = Match on the word "url" with any whitespace after it and then a parens
+	   (  = Start a capturing group
+	     (?:  = Start a non-capturing group
+	         [^)(]  = Match anything that isn't a parentheses
+	         |  = OR
+	         \(  = Match a start parentheses
+	             (?:  = Start another non-capturing groups
+	                 [^)(]+  = Match anything that isn't a parentheses
+	                 |  = OR
+	                 \(  = Match a start parentheses
+	                     [^)(]*  = Match anything that isn't a parentheses
+	                 \)  = Match a end parentheses
+	             )  = End Group
+              *\) = Match anything and then a close parens
+          )  = Close non-capturing group
+          *  = Match anything
+       )  = Close capturing group
+	 \)  = Match a close parens
+
+	 /gi  = Get all matches, not the first.  Be case insensitive.
+	 */
+	var fixedCss = css.replace(/url\s*\(((?:[^)(]|\((?:[^)(]+|\([^)(]*\))*\))*)\)/gi, function(fullMatch, origUrl) {
+		// strip quotes (if they exist)
+		var unquotedOrigUrl = origUrl
+			.trim()
+			.replace(/^"(.*)"$/, function(o, $1){ return $1; })
+			.replace(/^'(.*)'$/, function(o, $1){ return $1; });
+
+		// already a full url? no change
+		if (/^(#|data:|http:\/\/|https:\/\/|file:\/\/\/|\s*$)/i.test(unquotedOrigUrl)) {
+		  return fullMatch;
+		}
+
+		// convert the url to a full url
+		var newUrl;
+
+		if (unquotedOrigUrl.indexOf("//") === 0) {
+		  	//TODO: should we add protocol?
+			newUrl = unquotedOrigUrl;
+		} else if (unquotedOrigUrl.indexOf("/") === 0) {
+			// path should be relative to the base url
+			newUrl = baseUrl + unquotedOrigUrl; // already starts with '/'
+		} else {
+			// path should be relative to current directory
+			newUrl = currentDir + unquotedOrigUrl.replace(/^\.\//, ""); // Strip leading './'
+		}
+
+		// send back the fixed url(...)
+		return "url(" + JSON.stringify(newUrl) + ")";
+	});
+
+	// send back the fixed css
+	return fixedCss;
+};
+
+
+/***/ }),
+
 /***/ "./src/index.js":
 /*!**********************!*\
   !*** ./src/index.js ***!
@@ -2223,19 +3458,27 @@ L.Path.addInitHook(function () {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var leaflet_path_drag__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! leaflet.path.drag */ "./node_modules/leaflet.path.drag/src/Path.Drag.js");
+/* harmony import */ var leaflet_path_drag__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(leaflet_path_drag__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var leaflet_editable__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! leaflet-editable */ "./node_modules/leaflet-editable/src/Leaflet.Editable.js");
+/* harmony import */ var leaflet_editable__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(leaflet_editable__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var leaflet_contextmenu__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! leaflet-contextmenu */ "./node_modules/leaflet-contextmenu/dist/leaflet.contextmenu.js");
+/* harmony import */ var leaflet_contextmenu__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(leaflet_contextmenu__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var leaflet_contextmenu_dist_leaflet_contextmenu_css__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! leaflet-contextmenu/dist/leaflet.contextmenu.css */ "./node_modules/leaflet-contextmenu/dist/leaflet.contextmenu.css");
+/* harmony import */ var leaflet_contextmenu_dist_leaflet_contextmenu_css__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(leaflet_contextmenu_dist_leaflet_contextmenu_css__WEBPACK_IMPORTED_MODULE_3__);
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-__webpack_require__(/*! leaflet.path.drag */ "./node_modules/leaflet.path.drag/src/Path.Drag.js");
 
-__webpack_require__(/*! leaflet-editable */ "./node_modules/leaflet-editable/src/Leaflet.Editable.js");
+
+
+
 /**
  * Leaflet Image Mapper
  */
-
 
 var Limapper =
 /*#__PURE__*/
@@ -2245,7 +3488,7 @@ function () {
    *
    * @return an instance of Limapper
    */
-  function Limapper(leaflet) {
+  function Limapper() {
     _classCallCheck(this, Limapper);
 
     var that = this;
@@ -2255,8 +3498,9 @@ function () {
     that._identity = 1;
     that._editOnAdd = false;
     that._dblclickEdit = false;
-    that.L = leaflet || window.L;
+    that._disablePopup = false;
     that.win = window;
+    that.L = that.win.L;
   }
   /**
    * get name
@@ -2371,8 +3615,9 @@ function () {
             rect: {}
           };
           item.$ = {
-            name: "Item #".concat(that._identity++)
-          }; // allow for double click event
+            id: that._identity++
+          };
+          item.$.name = "Item #".concat(item.$.id); // allow for double click event
 
           item.on('dblclick', that.L.DomEvent.stop).on('dblclick', function (e) {
             if (that._dblclickEdit) {
@@ -2381,23 +3626,31 @@ function () {
 
             that.onDoubleClickItem(item, e);
           });
-          item.on('mouseover', function (e) {
-            if (map && item.mapdata) {
-              layerPopup = that.L.popup().setLatLng(e.latlng).setContent(that.renderPopup(item)).openOn(map);
-              item.popup = layerPopup;
-            }
-          });
-          item.on('mouseout', function (e) {
-            if (layerPopup && map) {
-              map.closePopup(layerPopup);
-              layerPopup = null;
-              item.popup = null;
-            }
-          });
+
+          if (!that._disablePopup) {
+            item.on('mouseover', function (e) {
+              if (map && item.mapdata) {
+                layerPopup = that.L.popup().setLatLng(e.latlng).setContent(that.renderPopup(item)).openOn(map);
+                item.popup = layerPopup;
+              }
+            });
+            item.on('mouseout', function (e) {
+              if (layerPopup && map) {
+                map.closePopup(layerPopup);
+                layerPopup = null;
+                item.popup = null;
+              }
+            });
+          }
+
           that.onAddItem(item);
         }
       });
-      return self;
+      setTimeout(function () {
+        map.contextmenu.showAt(that.p2ll([0, 0]));
+        map.contextmenu.hide();
+      }, 200);
+      return that;
     }
     /**
      * get items
@@ -2456,6 +3709,18 @@ function () {
       return item;
     }
     /**
+     * Called before add of item to layer
+     *
+     * @param  Object item the layer item
+     * @return Object  the item
+     */
+
+  }, {
+    key: "onAddingItem",
+    value: function onAddingItem(item) {
+      return item;
+    }
+    /**
      * Handle item double click
      *
      * @param  Object item  item
@@ -2470,15 +3735,21 @@ function () {
     }
     /**
      * add a single pixel coordinates item
-     * @param {object} mapData item map data
+     *
+     * @param Object mapData item map data
+     * @param Object opts optional layer option
      */
 
   }, {
     key: "addItem",
     value: function addItem(mapData) {
+      var opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {
+        contextmenu: true
+      };
       var that = this;
       var rect = mapData.rect;
-      var layer = that.L.rectangle([that.p2ll(rect.x, rect.y), that.p2ll(rect.xx, rect.yy)]);
+      var layer = that.L.rectangle([that.p2ll(rect.x, rect.y), that.p2ll(rect.xx, rect.yy)], opts); // add mapdata to layer
+
       layer.mapdata = mapData;
       layer.addTo(that._map);
 
@@ -2487,17 +3758,6 @@ function () {
       }
 
       return layer;
-    }
-  }, {
-    key: "addItems",
-    value: function addItems(items) {
-      var that = this;
-      var rst = [];
-      items.forEach(function (i) {
-        var it = that.addItem(i);
-        rst.push(it);
-      });
-      return it;
     }
     /**
      * remove item
@@ -2509,7 +3769,20 @@ function () {
     value: function removeItem(item) {
       if (item && item.remove) {
         item.remove();
+        that.onRemoveItem(item);
       }
+    }
+    /**
+     * Handle item removed event
+     *
+     * @param  Object item  item
+     * @return Object   the item
+     */
+
+  }, {
+    key: "onRemoveItem",
+    value: function onRemoveItem(item) {
+      return item;
     }
     /**
      * render popup

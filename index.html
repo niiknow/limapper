@@ -102,18 +102,6 @@ html, body, .main-wrapper { height: 100%; width: 100%; font-family: Helvetica, A
   height: 100%;
 }
     </style>
-<style>
-path.leaflet-interactive {
-  fill: #dddddd;
-  stroke: #cccccc;
-  stroke-width: 3;
-}
-path.leaflet-path-draggable {
-  fill: #3388ff;
-  stroke: #3388ff;
-  stroke-width: 3;
-}
-</style>
 </head>
 <body>
   <div><h1>Leaflet Image Mapper Demo</h1></div>
@@ -141,8 +129,14 @@ path.leaflet-path-draggable {
       elid: 'map',
       imageUrl: '319-various-call-center-women-pv.jpeg',
       imageWidth: 958,
-      imageHeight: 737
+      imageHeight: 737,
+      contextmenu: true,
+      contextmenuWidth: 140,
+      contextmenuItems: [{
+        text: 'test'
+      }]
     });
+
   function clickMe() {
     mapper._map.setView([0, 0], 1);
   }
