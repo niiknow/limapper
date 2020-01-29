@@ -2,7 +2,7 @@
  * limapper
  * Leaflet Image Mapper
 
- * @version v0.7.4
+ * @version v0.7.5
  * @author Tom Noogen
  * @homepage https://github.com/niiknow/limapper
  * @repository https://github.com/niiknow/limapper.git
