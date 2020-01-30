@@ -2,7 +2,7 @@
  * limapper
  * Leaflet Image Mapper
 
- * @version v0.7.5
+ * @version v0.7.6
  * @author Tom Noogen
  * @homepage https://github.com/niiknow/limapper
  * @repository https://github.com/niiknow/limapper.git
@@ -3646,10 +3646,6 @@ function () {
           that.onAddItem(item);
         }
       });
-      setTimeout(function () {
-        map.contextmenu.showAt(that.p2ll([0, 0]));
-        map.contextmenu.hide();
-      }, 200);
       return that;
     }
     /**

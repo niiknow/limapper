@@ -180,12 +180,6 @@ class Limapper {
       }
     })
 
-    setTimeout(() => {
-      map.contextmenu.showAt(that.p2ll([0,0]))
-      map.contextmenu.hide()
-    }, 200)
-
-
     return that
   }
 
