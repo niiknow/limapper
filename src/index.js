@@ -1,7 +1,6 @@
 import 'leaflet.path.drag'
 import 'leaflet-editable'
 import 'leaflet-contextmenu'
-import 'leaflet-contextmenu/dist/leaflet.contextmenu.css'
 
 /**
  * Leaflet Image Mapper
@@ -75,9 +74,9 @@ class Limapper {
   init(opts) {
     const that = this
     const defs = {
-      minZoom: opts.minZoom || -3,
-      maxZoom: opts.maxZoom || 1,
-      center: [0, -1 * opts.imageWidth],
+      minZoom: typeof(opts.minZoom) === 'undefined' ? -3 : opts.minZoom,
+      maxZoom: typeof(opts.maxZoom) === 'undefined' ? 1 : opts.maxZoom,
+      center: [0, -1 * (opts.imageWidth || 1000)],
       zoom: 1,
       editable: true,
       crs: that.L.CRS.Simple

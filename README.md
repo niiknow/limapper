@@ -15,7 +15,8 @@ You can use tools like Vuejs to render imagemap to the UI and/or [ImageMapster](
 Reference image mapper js file.
 
 ```javascript
-var limapper = new Limapper();
+import 'leaflet-contextmenu/dist/leaflet.contextmenu.css'
+const limapper = new Limapper();
 limapper.init({ 
     elid: 'map', 
     imageUrl: '319-various-call-center-women-pv.jpg', 
