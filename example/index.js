@@ -2863,7 +2863,7 @@ function () {
       var that = this;
       var v = item;
 
-      if (!that._map) {
+      if (!that._map || !v) {
         return null;
       }
 
@@ -3106,6 +3106,8 @@ function () {
   }, {
     key: "removeItem",
     value: function removeItem(item) {
+      var that = this;
+
       if (item && item.remove) {
         item.remove();
         that.onRemoveItem(item);

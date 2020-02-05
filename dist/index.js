@@ -2,7 +2,7 @@
  * limapper
  * Leaflet Image Mapper
 
- * @version v0.7.7
+ * @version v0.7.8
  * @author Tom Noogen
  * @homepage https://github.com/niiknow/limapper
  * @repository https://github.com/niiknow/limapper.git
@@ -2872,7 +2872,7 @@ function () {
       var that = this;
       var v = item;
 
-      if (!that._map) {
+      if (!that._map || !v) {
         return null;
       }
 
@@ -3115,6 +3115,8 @@ function () {
   }, {
     key: "removeItem",
     value: function removeItem(item) {
+      var that = this;
+
       if (item && item.remove) {
         item.remove();
         that.onRemoveItem(item);

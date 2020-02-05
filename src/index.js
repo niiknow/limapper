@@ -41,7 +41,7 @@ class Limapper {
     const that = this
     const v    = item
 
-    if (!that._map) {
+    if (!that._map || !v) {
       return null
     }
 
@@ -287,6 +287,8 @@ class Limapper {
    * @param Object item the map data item
    */
   removeItem(item) {
+    const that = this
+
     if (item && item.remove) {
       item.remove()
       that.onRemoveItem(item)

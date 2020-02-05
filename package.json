@@ -1,6 +1,6 @@
 {
   "name": "limapper",
-  "version": "0.7.7",
+  "version": "0.7.8",
   "description": "Leaflet Image Mapper",
   "author": "Tom Noogen",
   "main": "dist/index.js",
@@ -27,8 +27,8 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "@babel/core": "^7.7.7",
-    "@babel/preset-env": "^7.7.7",
+    "@babel/core": "^7.8.4",
+    "@babel/preset-env": "^7.8.4",
     "@babel/register": "^7.7.7",
     "ava": "^2.3.0",
     "babel-eslint": "^10.0.3",
@@ -39,7 +39,7 @@
     "cross-env": "^5.2.1",
     "es6-promise": "^4.2.8",
     "eslint": "^5.16.0",
-    "eslint-config-prettier": "^6.9.0",
+    "eslint-config-prettier": "^6.10.0",
     "eslint-friendly-formatter": "^4.0.1",
     "eslint-loader": "^3.0.3",
     "eslint-plugin-vue": "^5.2.3",
