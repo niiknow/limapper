@@ -2929,9 +2929,15 @@ function () {
         onAdd: function onAdd(map) {
           var container = that.L.DomUtil.create('div', 'leaflet-control leaflet-bar'),
               link = that.L.DomUtil.create('a', '', container);
-          link.href = '#';
+          link.href = 'javascript:void(0)';
           link.title = 'New shape: ' + this.options.kind;
           link.innerHTML = this.options.html;
+          link.accesskey = 's';
+
+          if (link.setAttribute) {
+            link.setAttribute('accesskey', 's');
+          }
+
           that.L.DomEvent.on(link, 'click', that.L.DomEvent.stop).on(link, 'click', function () {
             that.win.LAYER = this.options.callback.call(map.editTools);
           }, this);
