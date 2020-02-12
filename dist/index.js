@@ -2,7 +2,7 @@
  * limapper
  * Leaflet Image Mapper
 
- * @version v0.7.9
+ * @version v0.8.0
  * @author Tom Noogen
  * @homepage https://github.com/niiknow/limapper
  * @repository https://github.com/niiknow/limapper.git
@@ -2942,13 +2942,16 @@ function () {
           link.title = 'New shape: ' + this.options.kind;
           link.innerHTML = this.options.html;
           link.accesskey = 's';
+          that.rectTool = this;
 
           if (link.setAttribute) {
             link.setAttribute('accesskey', 's');
           }
 
-          that.L.DomEvent.on(link, 'click', that.L.DomEvent.stop).on(link, 'click', function () {
-            that.win.LAYER = this.options.callback.call(map.editTools);
+          that.L.DomEvent.on(link, 'click', function (e) {
+            // stop probagation and start one
+            that.L.DomEvent.stop(e);
+            that.startEditTool(); // this.options.callback.call(map.editTools)
           }, this);
           return container;
         }
@@ -2987,16 +2990,28 @@ function () {
 
           if (!that._disablePopup) {
             item.on('mouseover', function (e) {
-              if (map && item.mapdata) {
-                layerPopup = that.L.popup().setLatLng(e.latlng).setContent(that.renderPopup(item)).openOn(map);
-                item.popup = layerPopup;
+              if (!item.popup) {
+                item.popup = that.L.popup().setLatLng(e.latlng).setContent(that.renderPopup(item)).openOn(map);
+              }
+
+              if (item.popup) {
+                var latlng = e.latlng;
+
+                if (!latlng && e.layer.feature.geometry && e.layer.feature.geometry.coordinates) {
+                  var coord = e.layer.feature.geometry.coordinates;
+                  latlng = [coord[1], coord[0]];
+                }
+
+                if (latlng) {
+                  item.popup.setLatLng(e.latlng);
+                }
+
+                map.openPopup(item.popup);
               }
             });
             item.on('mouseout', function (e) {
-              if (layerPopup && map) {
-                map.closePopup(layerPopup);
-                layerPopup = null;
-                item.popup = null;
+              if (item.popup) {
+                map.closePopup(item.popup);
               }
             });
           }
@@ -3005,6 +3020,15 @@ function () {
         }
       });
       return that;
+    }
+  }, {
+    key: "startEditTool",
+    value: function startEditTool() {
+      var tool = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'rect';
+
+      if (tool === 'rect') {
+        this._map.editTools.startRectangle();
+      }
     }
     /**
      * get items
