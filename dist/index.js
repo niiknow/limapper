@@ -2,7 +2,7 @@
  * limapper
  * Leaflet Image Mapper
 
- * @version v0.8.0
+ * @version v0.8.1
  * @author Tom Noogen
  * @homepage https://github.com/niiknow/limapper
  * @repository https://github.com/niiknow/limapper.git
@@ -2913,7 +2913,7 @@ function () {
         editable: true,
         crs: that.L.CRS.Simple
       };
-      var southWest, northEast, bounds, map, layerPopup; // apply defaults
+      var southWest, northEast, bounds, map; // apply defaults
 
       for (var k in defs) {
         opts[k] = opts[k] || defs[k];
@@ -2989,31 +2989,39 @@ function () {
           });
 
           if (!that._disablePopup) {
+            item.bindPopup(that.renderPopup(item));
             item.on('mouseover', function (e) {
-              if (!item.popup) {
-                item.popup = that.L.popup().setLatLng(e.latlng).setContent(that.renderPopup(item)).openOn(map);
-              }
-
-              if (item.popup) {
-                var latlng = e.latlng;
-
-                if (!latlng && e.layer.feature.geometry && e.layer.feature.geometry.coordinates) {
-                  var coord = e.layer.feature.geometry.coordinates;
-                  latlng = [coord[1], coord[0]];
-                }
-
-                if (latlng) {
-                  item.popup.setLatLng(e.latlng);
-                }
-
-                map.openPopup(item.popup);
-              }
+              item.openPopup();
             });
             item.on('mouseout', function (e) {
-              if (item.popup) {
-                map.closePopup(item.popup);
-              }
+              item.closePopup();
             });
+            /*
+            item.on('mouseover', (e) => {
+              if (!item.popup) {
+                item.popup = that.L.popup()
+                  .setLatLng(e.latlng)
+                  .setContent(that.renderPopup(item))
+                  .openOn(map)
+              }
+               if (item.popup) {
+                let latlng = e.latlng
+                if (!latlng && e.layer.feature.geometry && e.layer.feature.geometry.coordinates) {
+                  const coord = e.layer.feature.geometry.coordinates
+                  latlng = [coord[1], coord[0]]
+                }
+                 if (latlng) {
+                  item.popup.setLatLng(e.latlng)
+                }
+                 map.openPopup(item.popup)
+              }
+            })
+             item.on('mouseout', (e) => {
+              if (item.popup) {
+                map.closePopup(item.popup)
+              }
+            })
+            */
           }
 
           that.onAddItem(item);

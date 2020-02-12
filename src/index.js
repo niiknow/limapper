@@ -81,7 +81,7 @@ class Limapper {
       editable: true,
       crs: that.L.CRS.Simple
     }
-    let southWest, northEast, bounds, map, layerPopup
+    let southWest, northEast, bounds, map
 
     // apply defaults
     for (let k in defs) {
@@ -165,6 +165,16 @@ class Limapper {
 
 
         if (!that._disablePopup) {
+          item.bindPopup(that.renderPopup(item))
+
+          item.on('mouseover', (e) => {
+            item.openPopup()
+          })
+
+          item.on('mouseout', (e) => {
+            item.closePopup()
+          })
+          /*
           item.on('mouseover', (e) => {
             if (!item.popup) {
               item.popup = that.L.popup()
@@ -193,6 +203,7 @@ class Limapper {
               map.closePopup(item.popup)
             }
           })
+          */
         }
 
         that.onAddItem(item)
