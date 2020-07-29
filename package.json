@@ -1,6 +1,6 @@
 {
   "name": "limapper",
-  "version": "0.8.1",
+  "version": "0.9.0",
   "description": "Leaflet Image Mapper",
   "author": "Tom Noogen",
   "main": "dist/index.js",
@@ -30,7 +30,7 @@
     "@babel/core": "^7.8.4",
     "@babel/preset-env": "^7.8.4",
     "@babel/register": "^7.7.7",
-    "ava": "^2.3.0",
+    "ava": "^3.11.0",
     "babel-eslint": "^10.0.3",
     "babel-plugin-add-module-exports": "^1.0.2",
     "browser-env": "^3.3.0",

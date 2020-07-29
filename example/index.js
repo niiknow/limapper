@@ -2823,9 +2823,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
  * Leaflet Image Mapper
  */
 
-var Limapper =
-/*#__PURE__*/
-function () {
+var Limapper = /*#__PURE__*/function () {
   /**
    * Initialize an instance of Limapper
    *
@@ -2839,11 +2837,9 @@ function () {
     that._latestItem = null;
     that._selectedItem = null;
     that._identity = 1;
-    that._editOnAdd = false;
-    that._dblclickEdit = false;
-    that._disablePopup = false;
     that.win = window;
     that.L = that.win.L;
+    that.tool = {};
   }
   /**
    * get name
@@ -2901,8 +2897,11 @@ function () {
         maxZoom: typeof opts.maxZoom === 'undefined' ? 1 : opts.maxZoom,
         center: [0, -1 * (opts.imageWidth || 1000)],
         zoom: 1,
-        editable: true,
-        crs: that.L.CRS.Simple
+        editable: false,
+        crs: that.L.CRS.Simple,
+        editOnAdd: false,
+        dblclickEdit: false,
+        disablePopup: false
       };
       var southWest, northEast, bounds, map; // apply defaults
 
@@ -2910,6 +2909,7 @@ function () {
         opts[k] = opts[k] || defs[k];
       }
 
+      that.opts = opts;
       map = that.L.map(opts.elid || 'map', opts);
       southWest = map.unproject([0, opts.imageHeight], map.getMaxZoom() - 1);
       northEast = map.unproject([opts.imageWidth, 0], map.getMaxZoom() - 1);
@@ -2927,37 +2927,42 @@ function () {
           html: ''
         },
         onAdd: function onAdd(map) {
-          var container = that.L.DomUtil.create('div', 'leaflet-control leaflet-bar'),
-              link = that.L.DomUtil.create('a', '', container);
-          link.href = 'javascript:void(0)';
-          link.title = 'New shape: ' + this.options.kind;
-          link.innerHTML = this.options.html;
-          link.accesskey = 's';
-          that.rectTool = this;
+          if (opts.editable) {
+            var container = that.L.DomUtil.create('div', 'leaflet-control leaflet-bar'),
+                link = that.L.DomUtil.create('a', '', container);
+            link.href = 'javascript:void(0)';
+            link.title = 'New shape: ' + this.options.kind;
+            link.innerHTML = this.options.html;
+            link.accesskey = 's';
+            that.tool.rect = this;
 
-          if (link.setAttribute) {
-            link.setAttribute('accesskey', 's');
+            if (link.setAttribute) {
+              link.setAttribute('accesskey', 's');
+            }
+
+            that.L.DomEvent.on(link, 'click', function (e) {
+              // stop probagation and start one
+              that.L.DomEvent.stop(e);
+              that.startEditTool(); // this.options.callback.call(map.editTools)
+            }, this);
+            return container;
           }
-
-          that.L.DomEvent.on(link, 'click', function (e) {
-            // stop probagation and start one
-            that.L.DomEvent.stop(e);
-            that.startEditTool(); // this.options.callback.call(map.editTools)
-          }, this);
-          return container;
-        }
-      }); // now create the rectangle control
-
-      that.L.NewRectangleControl = that.L.EditControl.extend({
-        options: {
-          position: 'topleft',
-          callback: map.editTools.startRectangle,
-          kind: 'rect',
-          html: '⬛'
         }
       }); // add the control to map
 
-      map.addControl(new that.L.NewRectangleControl()); // handle new item
+      if (opts.editable) {
+        // now create the rectangle control
+        that.L.NewRectangleControl = that.L.EditControl.extend({
+          options: {
+            position: 'topleft',
+            callback: map.editTools.startRectangle,
+            kind: 'rect',
+            html: '⬛'
+          }
+        });
+        map.addControl(new that.L.NewRectangleControl());
+      } // handle new item
+
 
       map.on('layeradd', function (e) {
         if (e.layer instanceof that.L.Path) {
@@ -2972,14 +2977,14 @@ function () {
           item.$.name = "Item #".concat(item.$.id); // allow for double click event
 
           item.on('dblclick', that.L.DomEvent.stop).on('dblclick', function (e) {
-            if (that._dblclickEdit) {
+            if (that.opts.dblclickEdit) {
               item.toggleEdit();
             }
 
             that.onDoubleClickItem(item, e);
           });
 
-          if (!that._disablePopup) {
+          if (!that.opts.disablePopup) {
             item.bindPopup(that.renderPopup(item));
             item.on('mouseover', function (e) {
               item.openPopup();
@@ -2987,32 +2992,6 @@ function () {
             item.on('mouseout', function (e) {
               item.closePopup();
             });
-            /*
-            item.on('mouseover', (e) => {
-              if (!item.popup) {
-                item.popup = that.L.popup()
-                  .setLatLng(e.latlng)
-                  .setContent(that.renderPopup(item))
-                  .openOn(map)
-              }
-               if (item.popup) {
-                let latlng = e.latlng
-                if (!latlng && e.layer.feature.geometry && e.layer.feature.geometry.coordinates) {
-                  const coord = e.layer.feature.geometry.coordinates
-                  latlng = [coord[1], coord[0]]
-                }
-                 if (latlng) {
-                  item.popup.setLatLng(e.latlng)
-                }
-                 map.openPopup(item.popup)
-              }
-            })
-             item.on('mouseout', (e) => {
-              if (item.popup) {
-                map.closePopup(item.popup)
-              }
-            })
-            */
           }
 
           that.onAddItem(item);
@@ -3130,7 +3109,7 @@ function () {
       layer.mapdata = mapData;
       layer.addTo(that._map);
 
-      if (that._editOnAdd) {
+      if (that.opts.editOnAdd) {
         layer.enableEdit();
       }
 
@@ -3201,7 +3180,7 @@ function () {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! /Users/tomnoogen/Desktop/work/niiknow/limapper/src/index.js */"./src/index.js");
+module.exports = __webpack_require__(/*! /Users/techsupport/Desktop/work/niiknow/limapper/src/index.js */"./src/index.js");
 
 
 /***/ }),

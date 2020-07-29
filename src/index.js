@@ -17,11 +17,9 @@ class Limapper {
     that._latestItem   = null
     that._selectedItem = null
     that._identity     = 1
-    that._editOnAdd    = false
-    that._dblclickEdit = false
-    that._disablePopup = false
     that.win           = window
     that.L             = that.win.L
+    that.tool          = {}
   }
 
   /**
@@ -78,8 +76,11 @@ class Limapper {
       maxZoom: typeof(opts.maxZoom) === 'undefined' ? 1 : opts.maxZoom,
       center: [0, -1 * (opts.imageWidth || 1000)],
       zoom: 1,
-      editable: true,
-      crs: that.L.CRS.Simple
+      editable: false,
+      crs: that.L.CRS.Simple,
+      editOnAdd: false,
+      dblclickEdit: false,
+      disablePopup: false
     }
     let southWest, northEast, bounds, map
 
@@ -88,6 +89,7 @@ class Limapper {
       opts[k] = opts[k] || defs[k]
     }
 
+    that.opts    = opts
     map          = that.L.map(opts.elid || 'map', opts)
     southWest    = map.unproject([0, opts.imageHeight], map.getMaxZoom() - 1)
     northEast    = map.unproject([opts.imageWidth, 0], map.getMaxZoom() - 1)
@@ -106,43 +108,47 @@ class Limapper {
         html: ''
       },
       onAdd: function (map) {
-        const container = that.L.DomUtil.create('div', 'leaflet-control leaflet-bar'),
-          link = that.L.DomUtil.create('a', '', container)
+        if (opts.editable) {
+          const container = that.L.DomUtil.create('div', 'leaflet-control leaflet-bar'),
+            link = that.L.DomUtil.create('a', '', container)
 
-        link.href      = 'javascript:void(0)'
-        link.title     = 'New shape: ' + this.options.kind
-        link.innerHTML = this.options.html
-        link.accesskey = 's'
-        that.rectTool  = this
+          link.href      = 'javascript:void(0)'
+          link.title     = 'New shape: ' + this.options.kind
+          link.innerHTML = this.options.html
+          link.accesskey = 's'
+          that.tool.rect = this
 
-        if (link.setAttribute) {
-          link.setAttribute('accesskey', 's')
+          if (link.setAttribute) {
+            link.setAttribute('accesskey', 's')
+          }
+
+          that.L.DomEvent
+            .on(link, 'click', function (e) {
+              // stop probagation and start one
+              that.L.DomEvent.stop(e)
+              that.startEditTool()
+              // this.options.callback.call(map.editTools)
+            }, this)
+
+          return container
         }
-
-        that.L.DomEvent
-          .on(link, 'click', function (e) {
-            // stop probagation and start one
-            that.L.DomEvent.stop(e)
-            that.startEditTool()
-            // this.options.callback.call(map.editTools)
-          }, this)
-
-        return container
-      }
-    })
-
-    // now create the rectangle control
-    that.L.NewRectangleControl = that.L.EditControl.extend({
-      options: {
-        position: 'topleft',
-        callback: map.editTools.startRectangle,
-        kind: 'rect',
-        html: '⬛'
       }
     })
 
     // add the control to map
-    map.addControl(new that.L.NewRectangleControl())
+    if (opts.editable) {
+      // now create the rectangle control
+      that.L.NewRectangleControl = that.L.EditControl.extend({
+        options: {
+          position: 'topleft',
+          callback: map.editTools.startRectangle,
+          kind: 'rect',
+          html: '⬛'
+        }
+      })
+
+      map.addControl(new that.L.NewRectangleControl())
+    }
 
     // handle new item
     map.on('layeradd', (e) => {
@@ -156,7 +162,7 @@ class Limapper {
 
         // allow for double click event
         item.on('dblclick', that.L.DomEvent.stop).on('dblclick', (e) => {
-          if (that._dblclickEdit) {
+          if (that.opts.dblclickEdit) {
             item.toggleEdit()
           }
 
@@ -164,7 +170,7 @@ class Limapper {
         })
 
 
-        if (!that._disablePopup) {
+        if (!that.opts.disablePopup) {
           item.bindPopup(that.renderPopup(item))
 
           item.on('mouseover', (e) => {
@@ -174,36 +180,6 @@ class Limapper {
           item.on('mouseout', (e) => {
             item.closePopup()
           })
-          /*
-          item.on('mouseover', (e) => {
-            if (!item.popup) {
-              item.popup = that.L.popup()
-                .setLatLng(e.latlng)
-                .setContent(that.renderPopup(item))
-                .openOn(map)
-            }
-
-            if (item.popup) {
-              let latlng = e.latlng
-              if (!latlng && e.layer.feature.geometry && e.layer.feature.geometry.coordinates) {
-                const coord = e.layer.feature.geometry.coordinates
-                latlng = [coord[1], coord[0]]
-              }
-
-              if (latlng) {
-                item.popup.setLatLng(e.latlng)
-              }
-
-              map.openPopup(item.popup)
-            }
-          })
-
-          item.on('mouseout', (e) => {
-            if (item.popup) {
-              map.closePopup(item.popup)
-            }
-          })
-          */
         }
 
         that.onAddItem(item)
@@ -312,7 +288,7 @@ class Limapper {
 
     layer.addTo(that._map)
 
-    if (that._editOnAdd) {
+    if (that.opts.editOnAdd) {
       layer.enableEdit()
     }
 
